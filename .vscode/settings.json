@@ -1,0 +1,29 @@
+{
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true,
+    "[vue]": {},
+    "eslint.run": "onType",
+    "editor.codeActionsOnSave": {
+      "source.fixAll": false,
+    },
+    "eslint.alwaysShowStatus": true,
+    "eslint.enable": true,
+    "files.eol": "\n",
+    "eslint.validate": [
+      "javascript",
+      "javascriptreact",
+      "vue",
+      "html"
+    ],
+    "vetur.format.defaultFormatter.js": "vscode-typescript",
+    "javascript.format.insertSpaceBeforeFunctionParenthesis": false,
+    "eslint.options": {
+      "extensions": [
+        ".js",
+        ".vue"
+      ]
+    },
+    "[html]": {
+      "editor.defaultFormatter": "vscode.html-language-features",
+    },
+  }

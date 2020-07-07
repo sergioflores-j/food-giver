@@ -1,0 +1,47 @@
+service: food-giver-auth
+package:
+  exclude:
+    - node_modules/aws-sdk/**
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  region: us-east-1
+  stage: api
+  timeout: 30
+  tags:
+    ms: food-giver-auth
+  logRetentionInDays: 7
+  apiGateway:
+    minimumCompressionSize: 102400 # Compress response when larger than specified size in bytes (must be between 0 and 10485760)
+  environment:
+    apikey: l1o2c3a4l5k6e7y
+
+  # TODO: Configurar IAM
+
+functions:
+  healthCheck:
+    handler: src/v1/health/check.run
+    memorySize: 128
+    events:
+      - http:
+          path: /auth/health/check
+          method: GET
+
+custom:
+  serverless-offline:
+    port: ${file(../../../dev.serverless.env.json):port.auth}
+  # Deletes all previous versions of the functions except for the last 'number' after deploy
+  # Prevents the error: CodeStorageExceededException
+  prune:
+    automatic: true
+    number: 3
+  webpack:
+    excludeFiles: 
+      - src/**/*.test.js
+      - test/**/*.test.js
+
+plugins:
+  - serverless-webpack
+  - serverless-offline
+  - serverless-prune-plugin

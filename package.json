@@ -1,0 +1,25 @@
+{
+  "name": "food-giver-root",
+  "version": "1.0.0",
+  "description": "Food Giver project",
+  "main": "index.js",
+  "scripts": {
+    "install-all": "npm i && cd app && npm i && cd ../services && npm i && npm run install-all",
+    "app": "cd app && npm run serve",
+    "services": "cd services && npm run start",
+    "all": "npm-run-all -l -p app services"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sergioflores-j/food-giver.git"
+  },
+  "author": "Sergio Eduardo Flores Jr <sergio.flores.junior17@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sergioflores-j/food-giver/issues"
+  },
+  "homepage": "https://github.com/sergioflores-j/food-giver#readme",
+  "dependencies": {
+    "npm-run-all": "^4.1.5"
+  }
+}
