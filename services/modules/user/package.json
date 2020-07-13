@@ -1,19 +1,11 @@
 {
-  "name": "food-giver-services-root",
+  "name": "food-giver-user-service",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "npm-run-all -l -p start-auth start-user",
-    "install-all": "npm run install-auth && npm run install-user",
-    "test": "npm run test-auth && npm run test-user",
-    "start-auth": "npm run start --prefix modules/auth",
-    "install-auth": "cd modules/auth && npm install && cd ../../",
-    "start-user": "npm run start --prefix modules/user",
-    "install-user": "cd modules/user && npm install && cd ../../",
-    "install-local-db": "npx sls dynamodb install",
-    "test-auth": "npm test --prefix modules/auth",
-    "test-user": "npm test --prefix modules/user",
+    "start": "npx serverless offline start",
+    "test": "mochapack --webpack-config webpack.config.js './src/**/*.test.js' './test/**/*.test.js'",
     "test:nyan": "npm run test -- --reporter=nyan",
     "tdd": "npm run test -- --watch",
     "test:coverage": "nyc npm run test --reporter=html",
@@ -22,21 +14,29 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@babel/core": "^7.9.0",
+    "@babel/preset-env": "^7.9.5",
+    "@babel/register": "^7.9.0",
+    "babel-loader": "^8.1.0",
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",
     "eslint": "^5.16.0",
     "eslint-config-airbnb-base": "^13.1.0",
     "eslint-import-resolver-node": "^0.3.2",
+    "eslint-import-resolver-webpack": "^0.12.1",
     "eslint-plugin-import": "^2.14.0",
     "husky": "^4.2.3",
     "mocha": "^7.1.1",
     "mocha-lcov-reporter": "^1.3.0",
-    "npm-run-all": "^4.1.5",
+    "mochapack": "^1.1.15",
     "nyc": "^15.0.0",
     "serverless": "^1.66.0",
     "serverless-offline": "^5.12.1",
     "serverless-prune-plugin": "^1.3.2",
+    "serverless-webpack": "^5.3.1",
     "sinon": "^9.0.2",
+    "webpack": "^4.43.0",
+    "webpack-node-externals": "^1.7.2",
     "yamljs": "^0.3.0"
   },
   "nyc": {
@@ -57,7 +57,7 @@
       "node_modules/",
       "coverage/",
       "**/*.test.js",
-      "**/.webpack/"
+      ".webpack/"
     ]
   },
   "dependencies": {
@@ -65,10 +65,11 @@
     "aws-lambda-utils-js": "^1.1.2",
     "aws-sdk": "^2.660.0",
     "axios": "^0.19.2",
-    "crypto": "^1.0.1",
     "deep-object-js": "^1.1.1",
     "moment-timezone": "^0.5.28",
+    "path": "^0.12.7",
     "qs": "^6.5.2",
-    "uuid": "^7.0.3"
+    "uuid": "^7.0.3",
+    "crypto": "^1.0.1"
   }
 }
