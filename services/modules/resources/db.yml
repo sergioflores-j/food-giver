@@ -1,0 +1,12 @@
+Resources:
+  tableFGUser:
+    Type: 'AWS::DynamoDB::Table'
+    Properties:
+      TableName: FG.User
+      AttributeDefinitions:
+        - AttributeName: email
+          AttributeType: S
+      KeySchema:
+        - AttributeName: email
+          KeyType: HASH
+      BillingMode: PAY_PER_REQUEST
