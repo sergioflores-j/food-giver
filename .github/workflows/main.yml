@@ -83,8 +83,8 @@ jobs:
     strategy:
       matrix:
         service: [
-          module/resources,
-          module/user,
+          modules/resources,
+          modules/user,
         ]
     name: Deploy ${{ matrix.service }} Service
     runs-on: ubuntu-latest
