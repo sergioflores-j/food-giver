@@ -6,16 +6,42 @@
   >
     <v-text-field
       v-model="name"
-      :counter="10"
-      :rules="nameRules"
-      label="Name"
+      label="Nome"
       required
     />
 
     <v-text-field
       v-model="email"
-      :rules="emailRules"
+      :rules="[formRules.required, ...formRules.emailRules]"
       label="E-mail"
+      required
+    />
+
+    <v-text-field
+      v-model="password"
+      :append-icon="showPwd ? 'mdi-eye' : 'mdi-eye-off'"
+      :rules="[formRules.required, formRules.passwordMatch]"
+      :type="showPwd ? 'text' : 'password'"
+      name="password"
+      label="Senha"
+      @click:append="showPwd = !showPwd"
+    />
+
+    <v-text-field
+      v-model="passwordConfirm"
+      :append-icon="showPwd ? 'mdi-eye' : 'mdi-eye-off'"
+      :rules="[formRules.required, formRules.passwordMatch]"
+      :type="showPwd ? 'text' : 'password'"
+      name="passwordConfirm"
+      label="Confirmar Senha"
+      @click:append="showPwd = !showPwd"
+    />
+
+    <!-- TODO -->
+    <v-text-field
+      v-model="personalId"
+      :rules="entityRules"
+      label="CPF"
       required
     />
 
@@ -67,15 +93,42 @@ export default {
     return {
       valid: true,
       name: '',
-      nameRules: [
-        (v) => !!v || 'Name is required',
-        (v) => (v && v.length <= 10) || 'Name must be less than 10 characters',
-      ],
+      // CAMPOS:
+      // nome
+      // email
+      // senha
+      // confirma senha
+
+      // cpf/cnpj
+      // telefone
+
+      // endereço
+      // rua
+      // numero
+      // cep
+      // complemento
+      // cidade
+      // bairro
+      // estado
+
+      // perfil (beneficiado|doador)
+
+      formRules: {
+        nameRules: [
+          v => !!v || 'Name is required',
+          v => (v && v.length <= 10) || 'Name must be less than 10 characters',
+        ],
+        emailRules: [
+          v => !!v || 'E-mail is required',
+          v => /.+@.+\..+/.test(v) || 'E-mail must be valid',
+        ],
+        passwordRules: {
+          // required: value => !!value || 'Campo obrigatório',
+        },
+        required: value => !!value || 'Campo obrigatório',
+        passwordMatch: () => ('The email and password you entered don\'t match'),
+      },
       email: '',
-      emailRules: [
-        (v) => !!v || 'E-mail is required',
-        (v) => /.+@.+\..+/.test(v) || 'E-mail must be valid',
-      ],
       select: null,
       items: [
         'Item 1',
