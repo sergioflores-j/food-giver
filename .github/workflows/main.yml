@@ -1,0 +1,157 @@
+name: deploy
+
+on:
+  push:
+    branches:
+      - master
+    # Não roda CI se tiver apenas alterações nas pastas listadas
+    # https://help.github.com/en/actions/automating-your-workflow-with-github-actions/workflow-syntax-for-github-actions#excluding-paths
+    paths-ignore:
+      - 'docs/**'
+      - '**/*.md'
+      - '*.md'
+
+# Disponibiliza as variáveis de ambiente para todos os jobs/steps
+# https://help.github.com/en/actions/automating-your-workflow-with-github-actions/workflow-syntax-for-github-actions#env
+env:
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  AWS_REGION: us-east-1
+  AWS_STAGE: api
+  AWS_S3_BUCKET: food-giver-production-www # Previously created bucket
+
+# Os jobs são executados em paralelo, caso seja necessário um esperar o outro deve-se usar: `needs: nome_do_outro_job`
+# https://help.github.com/en/actions/automating-your-workflow-with-github-actions/workflow-syntax-for-github-actions#jobs
+jobs:
+  deployApp:
+    # https://help.github.com/en/actions/automating-your-workflow-with-github-actions/workflow-syntax-for-github-actions#jobsjob_idstepsif
+    # https://help.github.com/en/actions/automating-your-workflow-with-github-actions/contexts-and-expression-syntax-for-github-actions
+    if: "!contains(github.event.head_commit.message, '[skip-ci]')"
+    name: Deploy App
+    runs-on: ubuntu-latest
+    env:
+      path: 'app'
+    steps:
+      - name: Commit Checkout
+        uses: actions/checkout@v2
+
+      # APP
+      - name: Cache app dependencies
+        uses: actions/cache@v1
+        id: app_deps_cache
+        timeout-minutes: 1
+        continue-on-error: true
+        with:
+          # Expressions doesn't accept JSON so the expression: `join([], '')` wouldn't work
+          # path: ${{ format('{0}/{1}/{2}', '.', env.path, 'node_modules') }}
+          path: ${{ format('{0}/{1}', env.path, 'node_modules') }}
+          key: ${{ runner.os }}-v1-node-${{ hashFiles(format('{0}/{1}', env.path, 'package-lock.json')) }}
+
+      - name: npm install app folder
+        if: steps.app_deps_cache.outputs.cache-hit != 'true'
+        # https://help.github.com/en/actions/automating-your-workflow-with-github-actions/workflow-syntax-for-github-actions#jobsjob_idstepsrun
+        run: npm ci
+        working-directory: ${{ format('{0}/{1}', '.', env.path) }}
+
+      # Improves webpack minification and tree shaking performance
+      - name: Cache app build
+        uses: actions/cache@v1
+        id: app_build_cache
+        timeout-minutes: 1
+        continue-on-error: true
+        with:
+          # Expressions doesn't accept JSON so the expression: `join([], '')` wouldn't work
+          # path: ${{ format('{0}/{1}/{2}', '.', env.path, 'node_modules') }}
+          path: ${{ format('{0}/{1}', env.path, '.cache') }}
+          key: ${{ runner.os }}-v1-node-app-build-cache
+
+      - name: build app
+        run: npm run build
+        working-directory: ${{ format('{0}/{1}', '.', env.path) }}
+
+      - name: deploy to S3
+        uses: jakejarvis/s3-sync-action@v0.5.1
+        with:
+          args: --acl public-read --follow-symlinks --delete
+        env:
+          SOURCE_DIR: 'dist'
+
+  deployServices:
+    if: "!contains(github.event.head_commit.message, '[skip-ci]')"
+    # https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idstrategymatrix
+    # Job matrix - A job matrix can generate a maximum of 256 jobs per workflow run. This limit also applies to self-hosted runners.
+    strategy:
+      matrix:
+        service: [
+          module/resources,
+          module/user,
+        ]
+    name: Deploy ${{ matrix.service }} Service
+    runs-on: ubuntu-latest
+    env:
+      root_path: services
+      path: 'services/${{ matrix.service }}'
+    steps:
+      - name: Commit Checkout
+        if: env.path != ''
+        uses: actions/checkout@v2
+
+      - name: Get npm cache directory
+        if: env.path != ''
+        id: global_npm_cache_dir
+        run: |
+          echo "::set-output name=dir::$(npm config get cache)"
+
+      - name: Cache global dependencies
+        if: env.path != ''
+        uses: actions/cache@v1
+        id: global_deps_cache
+        timeout-minutes: 1
+        continue-on-error: true
+        with:
+          path: ${{ steps.global_npm_cache_dir.outputs.dir }}
+          key: ${{ runner.os }}-v1-node-${{ hashFiles(format('{0}/{1}', env.path, 'package-lock.json')) }}
+
+      - name: Cache Service dependencies
+        if: env.path != ''
+        uses: actions/cache@v1
+        id: service_deps_cache
+        timeout-minutes: 1
+        continue-on-error: true
+        with:
+          # Expressions doesn't accept JSON so the expression: `join([], '')` wouldn't work
+          # path: ${{ format('{0}/{1}/{2}', '.', env.path, 'node_modules') }}
+          path: ${{ format('{0}/{1}', env.path, 'node_modules') }}
+          key: ${{ runner.os }}-v1-node-${{ hashFiles(format('{0}/{1}', env.path, 'package-lock.json')) }}
+
+      - name: npm install
+        if: steps.service_deps_cache.outputs.cache-hit != 'true' && env.path != ''
+        run: npm ci
+        working-directory: ${{ format('{0}/{1}', '.', env.path) }}
+
+      - name: Cache dependencies (shared deps)
+        if: env.path != '' && contains(matrix.service, '/')
+        uses: actions/cache@v1
+        id: service_deps_cache_shared
+        timeout-minutes: 1
+        continue-on-error: true
+        with:
+          path: ${{ format('{0}/{1}', env.root_path, 'node_modules') }}
+          key: ${{ runner.os }}-v1-node-${{ hashFiles(format('{0}/{1}', env.root_path, 'package-lock.json')) }}
+
+      - name: npm install (shared deps)
+        if: steps.service_deps_cache_shared.outputs.cache-hit != 'true' && env.path != '' && contains(matrix.service, '/')
+        run: npm ci
+        working-directory: ${{ format('{0}/{1}', '.', env.root_path) }}
+
+      - name: Set up AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: serverless deploy
+        if: env.path != ''
+        run: npx sls deploy --stage {{ env.AWS_STAGE }}
+        working-directory: ${{ format('{0}/{1}', '.', env.path) }}
