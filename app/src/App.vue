@@ -25,7 +25,7 @@
         />
       </div>
 
-      <v-spacer></v-spacer>
+      <v-spacer />
 
       <v-btn
         href="https://github.com/vuetifyjs/vuetify/releases/latest"
@@ -37,21 +37,36 @@
       </v-btn>
     </v-app-bar>
 
-    <v-content>
-      <HelloWorld/>
-    </v-content>
+    <v-main>
+      <v-container fluid>
+        <!-- If using vue-router -->
+        <router-view />
+      </v-container>
+    </v-main>
+
+    <v-footer
+      app
+      dark
+      padless
+    >
+      <v-card
+        flat
+        tile
+        class="indigo white--text text-center"
+      >
+        <v-card-text
+          class="white--text"
+        >
+          {{ new Date().getFullYear() }} - UNIVILLE - Universidade da Região de Joinville (Sergio e Carolina)
+        </v-card-text>
+      </v-card>
+    </v-footer>
   </v-app>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue';
-
 export default {
   name: 'App',
-
-  components: {
-    HelloWorld,
-  },
 
   data: () => ({
     //

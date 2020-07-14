@@ -26,4 +26,8 @@
     "[html]": {
       "editor.defaultFormatter": "vscode.html-language-features",
     },
+    "eslint.workingDirectories": [
+      "./app",
+      "./services"
+    ]
   }
