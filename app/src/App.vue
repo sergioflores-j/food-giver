@@ -45,19 +45,17 @@
     </v-main>
 
     <v-footer
-      app
       dark
       padless
     >
       <v-card
         flat
         tile
-        class="indigo white--text text-center"
+        class="primary white--text text-center"
+        min-width="100%"
       >
-        <v-card-text
-          class="white--text"
-        >
-          {{ new Date().getFullYear() }} - UNIVILLE - Universidade da Região de Joinville (Sergio e Carolina)
+        <v-card-text class="white--text">
+          {{ new Date().getFullYear() }} — <strong>UNIVILLE</strong> — Universidade da Região de Joinville (Sergio e Carolina)
         </v-card-text>
       </v-card>
     </v-footer>
