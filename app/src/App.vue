@@ -2,39 +2,24 @@
   <v-app>
     <v-app-bar
       app
-      color="primary"
-      dark
+      elevate-on-scroll
+      light
     >
       <div class="d-flex align-center">
-        <v-img
-          alt="Vuetify Logo"
-          class="shrink mr-2"
-          contain
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-logo-dark.png"
-          transition="scale-transition"
-          width="40"
-        />
-
-        <v-img
-          alt="Vuetify Name"
-          class="shrink mt-1 hidden-sm-and-down"
-          contain
-          min-width="100"
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-name-dark.png"
-          width="100"
-        />
+        <router-link to="/">
+          <v-img
+            alt="Vuetify Logo"
+            class="shrink mr-2"
+            contain
+            :src="require('./assets/logo.jpeg')"
+            transition="scale-transition"
+            width="50"
+          />
+        </router-link>
+        <v-spacer />
       </div>
 
       <v-spacer />
-
-      <v-btn
-        href="https://github.com/vuetifyjs/vuetify/releases/latest"
-        target="_blank"
-        text
-      >
-        <span class="mr-2">Latest Release</span>
-        <v-icon>mdi-open-in-new</v-icon>
-      </v-btn>
     </v-app-bar>
 
     <v-main>
@@ -45,19 +30,17 @@
     </v-main>
 
     <v-footer
-      app
       dark
       padless
     >
       <v-card
         flat
         tile
-        class="indigo white--text text-center"
+        class="primary white--text text-center"
+        min-width="100%"
       >
-        <v-card-text
-          class="white--text"
-        >
-          {{ new Date().getFullYear() }} - UNIVILLE - Universidade da Região de Joinville (Sergio e Carolina)
+        <v-card-text class="white--text">
+          {{ new Date().getFullYear() }} — <strong>UNIVILLE</strong> — Universidade da Região de Joinville (Sergio e Carolina)
         </v-card-text>
       </v-card>
     </v-footer>
