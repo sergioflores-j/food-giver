@@ -2,7 +2,7 @@ const dbClient = require('aws-dynamodb-factory-js');
 const { error } = require('../utils/utils');
 const { mountProjectionExpression } = require('../utils/dynamo');
 
-export default class GenericDao {
+module.exports = class GenericDao {
   constructor() {
     this.db = dbClient.doc();
   }
@@ -23,15 +23,8 @@ export default class GenericDao {
     }
   }
 
-  async _put({ params = {} } = {}) {
-    try {
-      await this.db.put(params).promise();
-
-      return {};
-    } catch (err) {
-      if (err && err.code === 'ConditionalCheckFailedException') return {};
-      throw error(500, err.message);
-    }
+  _put({ params = {} } = {}) {
+    return this.db.put(params).promise();
   }
 
   async _query({
@@ -122,4 +115,4 @@ export default class GenericDao {
       })),
     );
   }
-}
+};

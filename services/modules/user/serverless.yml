@@ -27,6 +27,13 @@ functions:
       - http:
           path: /user/health/check
           method: GET
+  createUser:
+    handler: src/v1/create.run
+    memorySize: 128
+    events:
+      - http:
+          path: /user
+          method: POST
 
 custom:
   serverless-offline:
