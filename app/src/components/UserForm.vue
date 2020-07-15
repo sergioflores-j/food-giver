@@ -1,0 +1,183 @@
+<template>
+  <v-form ref="form" v-model="valid">
+    <v-text-field
+      v-model="form.name"
+      label="Nome"
+      required
+      autofocus
+    />
+
+    <v-text-field
+      v-model="form.email"
+      :rules="[formRules.required, ...formRules.emailRules]"
+      label="E-mail"
+      required
+    />
+
+    <v-text-field
+      v-model="form.password"
+      :append-icon="showPwd ? 'mdi-eye' : 'mdi-eye-off'"
+      :rules="[formRules.required, formRules.passwordMatch]"
+      :type="showPwd ? 'text' : 'password'"
+      name="password"
+      label="Senha"
+      @click:append="showPwd = !showPwd"
+    />
+
+    <v-text-field
+      v-model="form.passwordConfirm"
+      :append-icon="showPwd ? 'mdi-eye' : 'mdi-eye-off'"
+      :rules="[formRules.required, formRules.passwordMatch]"
+      :type="showPwd ? 'text' : 'password'"
+      name="passwordConfirm"
+      label="Confirmar Senha"
+      @click:append="showPwd = !showPwd"
+    />
+
+    <v-text-field
+      v-model="form.personalId"
+      :rules="[formRules.required, ...formRules.personalIdRules]"
+      type="tel"
+      label="CPF/CNPJ"
+      required
+    />
+
+    <v-text-field
+      v-model="form.phone"
+      :rules="[formRules.required, ...formRules.phoneRules]"
+      type="tel"
+      label="Telefone/Celular"
+      required
+    />
+
+    <v-text-field
+      v-model="form.address.street"
+      :rules="[formRules.required]"
+      label="Rua"
+      required
+    />
+    <v-text-field
+      v-model="form.address.number"
+      :rules="[formRules.required]"
+      label="Número"
+      required
+    />
+    <v-text-field v-model="form.address.zipCode" label="CEP" />
+    <v-text-field v-model="form.address.complement" label="Complemento" />
+    <v-text-field
+      v-model="form.address.city"
+      :rules="[formRules.required]"
+      label="Cidade"
+      required
+    />
+
+    <v-select
+      v-model="form.address.state"
+      :items="states"
+      :rules="[formRules.required]"
+      label="Estado"
+      required
+    />
+
+    <v-select
+      v-model="form.profile"
+      :items="profiles"
+      :rules="[formRules.required]"
+      label="Perfil"
+      required
+    />
+
+    <v-btn :disabled="!valid" @click="submit">
+      Enviar
+    </v-btn>
+  </v-form>
+</template>
+
+<script>
+import { isEmail, isCpfCnpj, isPhone } from '@/utils/validation';
+
+export default {
+  name: 'UserForm',
+  data() {
+    return {
+      valid: true,
+      showPwd: false,
+      form: {
+        name: '',
+        email: '',
+        password: '',
+        passwordConfirm: '',
+        personalId: '',
+        phone: '',
+        address: {
+          street: '',
+          number: '',
+          zipCode: '',
+          complement: '',
+          city: '',
+          neighborhood: '',
+          state: null,
+        },
+        profile: null,
+      },
+      states: [ // TODO: criar arquivo com estados
+        'SC',
+        'RS',
+        'PR',
+      ],
+      profiles: [ // TODO: criar arquivo com os perfis
+        {
+          text: 'Beneficiario',
+          value: 'beneficiary',
+        },
+        {
+          text: 'Doador',
+          value: 'giver',
+        },
+        {
+          text: 'Ambos',
+          value: 'all',
+        },
+      ],
+      formRules: {
+        required: value => !!value || 'Campo obrigatório',
+        emailRules: [
+          v => isEmail(v) || 'E-mail inválido',
+        ],
+        phoneRules: [
+          v => isPhone(v) || 'Telefone inválido',
+        ],
+        personalIdRules: [
+          v => isCpfCnpj(v) || 'CNPJ/CPF inválido',
+        ],
+        passwordMatch: v => {
+          // TODO: verificar bug com essa rule
+          console.log('p', this.form.password, '- c', this.form.passwordConfirm);
+          console.log('this.form.password === this.form.passwordConfirm', this.form.password === this.form.passwordConfirm);
+          console.log('v', v);
+          return this.form.password === this.form.passwordConfirm || 'Senhas não combinam';
+        },
+      },
+    };
+  },
+  mounted() {
+    this.resetValidation();
+  },
+  methods: {
+    submit() {
+      this.$refs.form.validate();
+
+      this.$emit('submit', { ...this.form });
+    },
+    // reset() {
+    //   this.$refs.form.reset();
+    // },
+    resetValidation() {
+      this.$refs.form.resetValidation();
+    },
+  },
+};
+</script>
+
+<style lang="scss" scoped>
+</style>
