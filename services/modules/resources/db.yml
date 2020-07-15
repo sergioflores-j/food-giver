@@ -10,3 +10,15 @@ Resources:
         - AttributeName: email
           KeyType: HASH
       BillingMode: PAY_PER_REQUEST
+
+  tableFGDonation:
+    Type: 'AWS::DynamoDB::Table'
+    Properties:
+      TableName: FG.Donation
+      AttributeDefinitions:
+        - AttributeName: donationId
+          AttributeType: N
+      KeySchema:
+        - AttributeName: donationId
+          KeyType: HASH
+      BillingMode: PAY_PER_REQUEST
