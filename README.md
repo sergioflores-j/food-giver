@@ -1,17 +1,23 @@
 # Food Giver
 
-Projeto do Food Giver
+|Deploy|Coverage|
+|------|--------|
+|[![Deploy de Produção](https://github.com/sergioflores-j/food-giver/workflows/deploy/badge.svg?branch=master&label=Production)](https://github.com/sergioflores-j/food-giver/actions?query=branch%3Amaster)|TODO
+
+
+![image](./app/src/assets/logo.jpeg)
+
+[Acessar a aplicação](https://d6x206yew963j.cloudfront.net)
 
 TODO: descrever mais detalhes da aplicação aqui
 
-## Dependências externas
+## Estrutura do projeto
 
-Essas dependências devem estar previamente instaladas na máquina antes de começar a interagir com o projeto.
+TODO
 
-- Node v12.x+
-- Java v8+
+## Desenvolvimento
 
-## Primeiros passos
+### Primeiros passos
 
 - Instalando as dependências:
 ```bash
@@ -23,11 +29,16 @@ npm run install-all
 npm run all
 ```
 
-## Comandos disponíveis
+### Comandos disponíveis
 
 TODO: descrever comandos após serem criados
 
-## Desenvolvimento
+### Dependências externas
+
+Essas dependências devem estar previamente instaladas na máquina antes de começar a interagir com o projeto.
+
+- Node v12.x+
+- Java v8+
 
 ### Criando um novo service `module`
 

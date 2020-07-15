@@ -1,18 +1,18 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <div>
+      Cadastre-se <router-link to="/register">aqui</router-link>
+    </div>
+    <div>
+      Já é cadastrado? Faça o <router-link to="/login">Login</router-link>
+    </div>
+
+    TODO: Landing page
   </div>
 </template>
 
 <script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue';
-
 export default {
   name: 'Home',
-  components: {
-    HelloWorld,
-  },
 };
 </script>
