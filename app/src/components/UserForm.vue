@@ -2,6 +2,7 @@
   <v-form ref="form" v-model="valid">
     <v-text-field
       v-model="form.name"
+      :loading="loading"
       label="Nome"
       required
       autofocus
@@ -9,6 +10,7 @@
 
     <v-text-field
       v-model="form.email"
+      :loading="loading"
       :rules="[formRules.required, ...formRules.emailRules]"
       label="E-mail"
       required
@@ -16,6 +18,7 @@
 
     <v-text-field
       v-model="form.password"
+      :loading="loading"
       :append-icon="showPwd ? 'mdi-eye' : 'mdi-eye-off'"
       :rules="[formRules.required, formRules.passwordMatch]"
       :type="showPwd ? 'text' : 'password'"
@@ -26,6 +29,7 @@
 
     <v-text-field
       v-model="form.passwordConfirm"
+      :loading="loading"
       :append-icon="showPwd ? 'mdi-eye' : 'mdi-eye-off'"
       :rules="[formRules.required, formRules.passwordMatch]"
       :type="showPwd ? 'text' : 'password'"
@@ -36,6 +40,7 @@
 
     <v-text-field
       v-model="form.personalId"
+      :loading="loading"
       :rules="[formRules.required, ...formRules.personalIdRules]"
       type="tel"
       label="CPF/CNPJ"
@@ -44,6 +49,7 @@
 
     <v-text-field
       v-model="form.phone"
+      :loading="loading"
       :rules="[formRules.required, ...formRules.phoneRules]"
       type="tel"
       label="Telefone/Celular"
@@ -52,20 +58,23 @@
 
     <v-text-field
       v-model="form.address.street"
+      :loading="loading"
       :rules="[formRules.required]"
       label="Rua"
       required
     />
     <v-text-field
       v-model="form.address.number"
+      :loading="loading"
       :rules="[formRules.required]"
       label="Número"
       required
     />
-    <v-text-field v-model="form.address.zipCode" label="CEP" />
-    <v-text-field v-model="form.address.complement" label="Complemento" />
+    <v-text-field v-model="form.address.zipCode" label="CEP" :loading="loading" />
+    <v-text-field v-model="form.address.complement" label="Complemento" :loading="loading" />
     <v-text-field
       v-model="form.address.city"
+      :loading="loading"
       :rules="[formRules.required]"
       label="Cidade"
       required
@@ -73,6 +82,7 @@
 
     <v-select
       v-model="form.address.state"
+      :loading="loading"
       :items="states"
       :rules="[formRules.required]"
       label="Estado"
@@ -81,13 +91,14 @@
 
     <v-select
       v-model="form.profile"
+      :loading="loading"
       :items="profiles"
       :rules="[formRules.required]"
       label="Perfil"
       required
     />
 
-    <v-btn :disabled="!valid" @click="submit">
+    <v-btn :disabled="!valid" :loading="loading" @click="submit">
       Enviar
     </v-btn>
   </v-form>
@@ -98,6 +109,9 @@ import { isEmail, isCpfCnpj, isPhone } from '@/utils/validation';
 
 export default {
   name: 'UserForm',
+  props: {
+    loading: { type: Boolean, default: false },
+  },
   data() {
     return {
       valid: true,
