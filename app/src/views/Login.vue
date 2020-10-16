@@ -13,8 +13,7 @@
 
       <v-row>
         <v-col
-          cols="auto"
-          xs="12"
+          cols="12"
           sm="12"
           md="6"
         >
@@ -29,8 +28,7 @@
         </v-col>
 
         <v-col
-          cols="auto"
-          xs="12"
+          cols="12"
           sm="12"
           md="6"
         >
@@ -57,12 +55,13 @@
         </v-col>
       </v-row>
       <v-row>
-        <v-col>
+        <v-col class="d-flex justify-end">
           <v-btn
             :disabled="!valid"
             color="success"
             @click="submit"
           >
+            <v-icon left>mdi-login</v-icon>
             Entrar
           </v-btn>
         </v-col>
@@ -114,7 +113,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.col {
+.col-12, .col {
   padding-bottom: 0px;
   padding-top: 0px;
 }

@@ -1,5 +1,9 @@
 <template>
   <v-app>
+    <v-navigation-drawer app>
+      <!-- -->
+    </v-navigation-drawer>
+
     <v-app-bar
       app
       elevate-on-scroll
@@ -25,7 +29,9 @@
     <v-main>
       <v-container fluid>
         <!-- If using vue-router -->
-        <router-view />
+        <transition name="slide-x-reverse-transition" mode="out-in">
+          <router-view :key="$route.fullPath" />
+        </transition>
       </v-container>
     </v-main>
 
@@ -40,7 +46,9 @@
         min-width="100%"
       >
         <v-card-text class="white--text">
-          {{ new Date().getFullYear() }} — <strong>UNIVILLE</strong> — Universidade da Região de Joinville (Sergio e Carolina)
+          {{ new Date().getFullYear() }}
+          — <strong>UNIVILLE</strong>
+          — Universidade da Região de Joinville (Sergio e Carolina)
         </v-card-text>
       </v-card>
     </v-footer>
