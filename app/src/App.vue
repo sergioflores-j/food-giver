@@ -8,6 +8,7 @@
       app
       elevate-on-scroll
       light
+      show-drawer
     >
       <div class="d-flex align-center">
         <router-link to="/">
@@ -24,6 +25,8 @@
       </div>
 
       <v-spacer />
+
+      <Navbar />
     </v-app-bar>
 
     <v-main>
@@ -56,9 +59,13 @@
 </template>
 
 <script>
+import Navbar from '@/components/Navbar.vue';
+
 export default {
   name: 'App',
-
+  components: {
+    Navbar,
+  },
   data: () => ({
     //
   }),
