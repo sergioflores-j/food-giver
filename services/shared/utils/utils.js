@@ -21,7 +21,7 @@ const lambdaResp = (statusCode, body) => ({ statusCode, ...(body ? { body: objTo
 const generateHash = arg => crypto.createHash('md5').update(arg).digest('hex');
 
 const lambdaRespErr = ({
-  status, statusCode, stack, error, message,
+  status, statusCode, stack, error, message, errors,
 } = {}) => {
   const body = { error: { message: 'Internal Server Error' } };
 
@@ -31,7 +31,15 @@ const lambdaRespErr = ({
 
   if (stack && (process.env.DEBUG || process.env.IS_OFFLINE)) body.error.stack = stack;
 
-  return lambdaResp(status || statusCode || 500, body);
+  let finalStatus = status || statusCode;
+
+  // ? Validation Error
+  if (errors) {
+    body.error.errors = errors;
+    finalStatus = 400;
+  }
+
+  return lambdaResp(finalStatus || 500, body);
 };
 
 const error = (statusCode, err) => ({

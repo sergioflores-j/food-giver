@@ -70,8 +70,16 @@
       label="Número"
       required
     />
-    <v-text-field v-model="form.address.zipCode" label="CEP" :loading="loading" />
-    <v-text-field v-model="form.address.complement" label="Complemento" :loading="loading" />
+    <v-text-field
+      v-model="form.address.zipCode"
+      label="CEP"
+      :loading="loading"
+    />
+    <v-text-field
+      v-model="form.address.complement"
+      label="Complemento"
+      :loading="loading"
+    />
     <v-text-field
       v-model="form.address.city"
       :loading="loading"
@@ -106,6 +114,8 @@
 
 <script>
 import { isEmail, isCpfCnpj, isPhone } from '@/utils/validation';
+import profiles from '@/constants/profiles';
+import states from '@/constants/states';
 
 export default {
   name: 'UserForm',
@@ -134,25 +144,10 @@ export default {
         },
         profile: null,
       },
-      states: [ // TODO: criar arquivo com estados
-        'SC',
-        'RS',
-        'PR',
-      ],
-      profiles: [ // TODO: criar arquivo com os perfis
-        {
-          text: 'Beneficiario',
-          value: 'beneficiary',
-        },
-        {
-          text: 'Doador',
-          value: 'giver',
-        },
-        {
-          text: 'Ambos',
-          value: 'all',
-        },
-      ],
+      states,
+      profiles: Object.entries(profiles).map(([key, { label } = {}]) => ({
+        text: label, value: key,
+      })),
       formRules: {
         required: value => !!value || 'Campo obrigatório',
         emailRules: [
