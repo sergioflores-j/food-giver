@@ -24,3 +24,9 @@ Observação: essa arquitetura transforma a API em um "microlítico", onde exist
 ### :warning: Tomar bastante cuidado nas diferenças abaixo:
 - Na raíz é node normal (com CommonJS = require, module.exports)
 - Dentro da pasta do ms com webpack são ESModules (import/export)
+
+## Testes
+
+### Geração de dados de testes
+
+- https://www.4devs.com.br/gerador_de_pessoas
