@@ -65,11 +65,12 @@
     "aws-lambda-utils-js": "^1.1.2",
     "aws-sdk": "^2.660.0",
     "axios": "^0.19.2",
+    "crypto": "^1.0.1",
     "deep-object-js": "^1.1.1",
     "moment-timezone": "^0.5.28",
     "path": "^0.12.7",
     "qs": "^6.5.2",
     "uuid": "^7.0.3",
-    "crypto": "^1.0.1"
+    "yup": "^0.29.3"
   }
 }
