@@ -3,13 +3,14 @@ import { buildIAMPolicy } from '@shared/utils/aws';
 
 function authorizeUser(userScopes, methodArn) {
   console.log(`authorizeUser ${JSON.stringify(userScopes)} ${methodArn}`);
+  // TODO: validate
   const hasValidScope = true;
   return hasValidScope;
 }
 
 /**
  * Be careful with multiple methods and paths on same API gateway instance
- * If the resource is cached in full there will be intermitent 403 errors for diferent requests with the same token
+ * If the resource is cached in full there will be intermittent 403 errors for different requests with the same token
  * Turns arn:aws:execute-api:sa-east-1:account:apigatewayhash/dev/POST/v1/whatever
  * Into  arn:aws:execute-api:sa-east-1:account:apigatewayhash/dev/*
  * @param {*} resource
@@ -21,35 +22,34 @@ function generalizeResource(resource) {
     .join('/');
 }
 
-export async function handler(event) {
+export async function run(event) {
   try {
-    const token = event.authorizationToken;
-    const user = jwt.verify(token, process.env.JWT_SECRET);
-    console.log('user', JSON.stringify(user));
+    console.log('event', event);
+    const tokenContext = jwt.verify(event.authorizationToken, process.env.JWT_SECRET);
 
     // Checks if the user's scopes allow him to call the current endpoint ARN
     // const user = decoded.user;
-    const isAllowed = authorizeUser(user.scopes, event.methodArn);
+    const isAllowed = authorizeUser(tokenContext.scopes, event.methodArn);
 
     // Return an IAM policy document for the current endpoint
     const effect = isAllowed ? 'Allow' : 'Deny';
-    const { userId } = user;
-    const authorizerContext = { user: JSON.stringify(user) };
+    const authorizerContext = { tokenContext: JSON.stringify(tokenContext) };
     const methodArn = generalizeResource(event.methodArn);
-    const policyDocument = buildIAMPolicy(
-      userId,
+
+    const policyDocument = buildIAMPolicy({
+      userId: tokenContext.user.email,
       effect,
-      methodArn,
-      authorizerContext,
-    );
-    console.log('Returning IAM policy document');
-    return { body: JSON.stringify(policyDocument) };
+      resource: methodArn,
+      context: authorizerContext,
+    });
+
+    return policyDocument;
   } catch (e) {
-    console.log(e.message);
+    console.log('Error authorizer', e.message);
     return { body: 'Unauthorized' };
   }
 }
 
 export default {
-  handler,
+  run,
 };

@@ -18,6 +18,10 @@ provider:
   # TODO: Configurar IAM
 
 functions:
+  customAuthorizer:
+    handler: src/v1/authorizer.run
+    memorySize: 128
+
   healthCheck:
     handler: src/v1/health/check.run
     memorySize: 128
@@ -32,9 +36,6 @@ functions:
       - http:
           path: /auth/login
           method: POST
-  authorizer:
-    handler: src/v1/authorizer.run
-    memorySize: 128
 
 custom:
   serverless-offline:

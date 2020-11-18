@@ -2,13 +2,16 @@
  * Returns an IAM policy document for a given user and resource.
  *
  * @method buildIAMPolicy
- * @param {String} userId - user id
- * @param {String} effect  - Allow / Deny
- * @param {String} resource - resource ARN
- * @param {String} context - response context
- * @returns {Object} policyDocument
+ * @param {object} param0
+ * @param {string} param0.userId - user id
+ * @param {string} param0.effect  - Allow / Deny
+ * @param {string} param0.resource - resource ARN
+ * @param {string} param0.context - response context
+ * @returns {object} policyDocument
  */
-const buildIAMPolicy = (userId, effect, resource, context) => {
+const buildIAMPolicy = ({
+  userId, effect, resource, context,
+}) => {
   console.log(`buildIAMPolicy ${userId} ${effect} ${resource}`);
   const policy = {
     principalId: userId,

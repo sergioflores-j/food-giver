@@ -45,7 +45,7 @@ export const run = async ({ email, password }) => {
 const getUser = async ({ email }) => {
   const user = await new UserDao().get({
     email,
-    fields: ['name', 'phone', 'profile', 'federalId', 'password'],
+    fields: ['email', 'name', 'phone', 'profile', 'federalId', 'password'],
   });
 
   if (!user) throw error(env.STATUS_UNAUTHORIZED, COMMON_ERROR);

@@ -18,6 +18,10 @@ provider:
   # TODO: Configurar IAM
 
 functions:
+  customAuthorizer:
+    # TODO: find a better way (not arn :/)
+    handler: ../auth/src/v1/authorizer.run
+    memorySize: 128
   healthCheck:
     handler: src/v1/health/check.run
     memorySize: 128
