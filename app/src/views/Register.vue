@@ -2,6 +2,7 @@
   <v-container>
     <user-form
       :loading="loading"
+      :errors="errors"
       @submit="submit"
     />
   </v-container>
@@ -19,6 +20,7 @@ export default {
   data() {
     return {
       loading: false,
+      errors: [],
     };
   },
   methods: {
@@ -33,9 +35,9 @@ export default {
 
         // ? Envia para a página inicial
         this.$router.push('/');
-      } catch (error) {
-        console.error('error', error);
-        // TODO: handle error
+      } catch (err) {
+        if (err.response?.data?.error?.errors)
+          this.errors = err.response.data.error.errors;
       } finally {
         this.loading = false;
       }
