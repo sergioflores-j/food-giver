@@ -46,9 +46,6 @@
 
       <v-row>
         <v-col>
-          <span class="mr-1">
-            Novo por aqui?
-          </span>
           <router-link to="/register">
             Cadastre-se
           </router-link>

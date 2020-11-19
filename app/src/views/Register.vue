@@ -10,7 +10,7 @@
 
 <script>
 import UserForm from '@/components/UserForm.vue';
-import UserService from '@/services/UserService';
+import { create } from '@/services/user';
 
 export default {
   name: 'Register',
@@ -28,7 +28,7 @@ export default {
       this.loading = true;
 
       try {
-        await UserService.create(user);
+        await create(user);
 
         // TODO: Notificar que criou o usuário
         // TODO: realizar login

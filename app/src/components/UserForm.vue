@@ -211,7 +211,7 @@
 import { isEmail, isCpfCnpj, isPhone } from '@/utils/validation';
 import profiles from '@/constants/profiles';
 import states from '@/constants/states';
-import UserService from '@/services/UserService';
+import { checkExistentUser } from '@/services/user';
 
 export default {
   name: 'UserForm',
@@ -283,7 +283,7 @@ export default {
       if (this.form.email === this.existentUserError) return;
 
       this.internalLoading = true;
-      const { exists } = await UserService.checkExistentUser(this.form.email);
+      const { exists } = await checkExistentUser(this.form.email);
       this.internalLoading = false;
 
       if (exists) {

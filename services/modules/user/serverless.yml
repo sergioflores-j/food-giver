@@ -43,6 +43,14 @@ functions:
       - http:
           path: /user/{email}/check
           method: GET
+  getUser:
+    handler: src/v1/get.run
+    memorySize: 128
+    events:
+      - http:
+          path: /user/{email}
+          method: GET
+          authorizer: customAuthorizer
 
 custom:
   serverless-offline:
