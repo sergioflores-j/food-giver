@@ -10,12 +10,7 @@ const schema = yup.object({
     number: yup.string().required(),
     state: yup.string().required(),
     street: yup.string().required(),
-    zipCode: yup.string().test('is-cep', 'zipCode is invalid', val => {
-      if (!val) return false;
-      if (val.length === 8) return true;
-
-      return false;
-    }),
+    zipCode: yup.string(),
   }),
   createdAt: yup.string().default(() => new Date().toISOString()).required(),
   email: yup.string().required().email(),

@@ -73,13 +73,15 @@
             Usuário já cadastrado!
           </v-alert>
 
-          <v-btn
-            color="primary"
-            :disabled="!validStep[1]"
-            @click.native="submitFirstStep"
-          >
-            Continuar
-          </v-btn>
+          <div class="action-buttons">
+            <v-btn
+              color="primary"
+              :disabled="!validStep[1]"
+              @click.native="submitFirstStep"
+            >
+              Continuar
+            </v-btn>
+          </div>
         </v-form>
       </v-stepper-content>
       <v-stepper-content step="2">
@@ -110,16 +112,18 @@
             required
           />
 
-          <v-btn text @click.native="step = 1">
-            Voltar
-          </v-btn>
-          <v-btn
-            color="primary"
-            :disabled="!validStep[2]"
-            @click.native="step = 3"
-          >
-            Continuar
-          </v-btn>
+          <div class="action-buttons">
+            <v-btn text @click.native="step = 1">
+              Voltar
+            </v-btn>
+            <v-btn
+              color="primary"
+              :disabled="!validStep[2]"
+              @click.native="step = 3"
+            >
+              Continuar
+            </v-btn>
+          </div>
         </v-form>
       </v-stepper-content>
 
@@ -151,6 +155,13 @@
             :loading="isLoading"
           />
           <v-text-field
+            v-model="form.address.neighborhood"
+            :loading="isLoading"
+            :rules="[formRules.required]"
+            label="Bairro"
+            required
+          />
+          <v-text-field
             v-model="form.address.city"
             :loading="isLoading"
             :rules="[formRules.required]"
@@ -176,18 +187,20 @@
             </ul>
           </v-alert>
 
-          <v-btn text @click.native="step = 2">
-            Voltar
-          </v-btn>
+          <div class="action-buttons">
+            <v-btn text @click.native="step = 2">
+              Voltar
+            </v-btn>
 
-          <v-btn
-            color="primary"
-            :disabled="!validStep[3]"
-            :loading="isLoading"
-            @click="submit"
-          >
-            Enviar
-          </v-btn>
+            <v-btn
+              color="primary"
+              :disabled="!validStep[3]"
+              :loading="isLoading"
+              @click="submit"
+            >
+              Enviar
+            </v-btn>
+          </div>
         </v-form>
       </v-stepper-content>
     </v-stepper-items>
@@ -286,4 +299,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.action-buttons {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
 </style>
