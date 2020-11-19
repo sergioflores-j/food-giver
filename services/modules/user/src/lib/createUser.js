@@ -13,7 +13,7 @@ import userSchema from '@shared/schemas/user';
 export const create = async ({ user }) => {
   checkParameters({ user });
 
-  await run({ user });
+  return run({ user });
 };
 
 export const run = async ({ user }) => {

@@ -36,6 +36,13 @@ functions:
       - http:
           path: /user
           method: POST
+  checkExistentUser:
+    handler: src/v1/checkExistentUser.run
+    memorySize: 128
+    events:
+      - http:
+          path: /user/{email}/check
+          method: GET
 
 custom:
   serverless-offline:
