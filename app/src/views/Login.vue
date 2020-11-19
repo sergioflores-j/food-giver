@@ -61,7 +61,9 @@
             color="success"
             @click="submit"
           >
-            <v-icon left>mdi-login</v-icon>
+            <v-icon left>
+              mdi-login
+            </v-icon>
             Entrar
           </v-btn>
         </v-col>
@@ -98,15 +100,13 @@ export default {
   },
   methods: {
     submit() {
-      this.$refs.form.validate();
+      const isValid = this.$refs.form.validate();
 
-      // TODO: chamar endpoint
-    },
-    reset() {
-      this.$refs.form.reset();
-    },
-    resetValidation() {
-      this.$refs.form.resetValidation();
+      if (!isValid) return;
+
+      this.$store.dispatch('auth/login', { email: this.email, password: this.password })
+        .then(() => this.$router.push('/'))
+        .catch(err => console.log(err));
     },
   },
 };

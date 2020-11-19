@@ -117,7 +117,7 @@ export default {
   }),
   computed: {
     isAuthenticated() {
-      return this.$store.state.isAuthenticated;
+      return this.$store.getters['auth/isLoggedIn'];
     },
   },
 };
