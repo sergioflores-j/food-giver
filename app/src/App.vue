@@ -56,22 +56,6 @@
       light
       show-drawer
     >
-      <div class="d-flex align-center">
-        <router-link to="/">
-          <v-img
-            alt="Vuetify Logo"
-            class="shrink mr-2"
-            contain
-            :src="require('./assets/logo.jpeg')"
-            transition="scale-transition"
-            width="50"
-          />
-        </router-link>
-        <v-spacer />
-      </div>
-
-      <v-spacer />
-
       <Navbar />
     </v-app-bar>
 
