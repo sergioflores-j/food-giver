@@ -23,24 +23,25 @@
       nav
       dense
     >
-      <v-list-item link>
-        <v-list-item-icon>
-          <v-icon>mdi-folder</v-icon>
-        </v-list-item-icon>
-        <v-list-item-title>My Files</v-list-item-title>
-      </v-list-item>
-      <v-list-item link>
-        <v-list-item-icon>
-          <v-icon>mdi-account-multiple</v-icon>
-        </v-list-item-icon>
-        <v-list-item-title>Shared with me</v-list-item-title>
-      </v-list-item>
-      <v-list-item link>
-        <v-list-item-icon>
-          <v-icon>mdi-star</v-icon>
-        </v-list-item-icon>
-        <v-list-item-title>Starred</v-list-item-title>
-      </v-list-item>
+      <v-list-item-group
+        v-model="selectedItem"
+        color="primary"
+      >
+        <template v-for="(item, i) in actions">
+          <v-list-item
+            v-if="checkAccess(item)"
+            :key="i"
+          >
+            <v-list-item-icon>
+              <v-icon v-text="item.icon" />
+            </v-list-item-icon>
+
+            <v-list-item-content>
+              <v-list-item-title v-text="item.text" />
+            </v-list-item-content>
+          </v-list-item>
+        </template>
+      </v-list-item-group>
     </v-list>
   </div>
 </template>
@@ -48,9 +49,62 @@
 <script>
 export default {
   name: 'Sidebar',
+  data() {
+    return {
+      // TODO:
+      selectedItem: 0,
+      actions: [
+        {
+          text: 'My Files',
+          icon: 'mdi-folder',
+          action: '',
+          profile: '',
+        },
+        {
+          text: 'Shared with me',
+          icon: 'mdi-account-multiple',
+          action: '',
+          profile: '',
+        },
+        {
+          text: 'Starred',
+          icon: 'mdi-star',
+          action: '',
+          profile: '',
+        },
+        {
+          text: 'Recent',
+          icon: 'mdi-history',
+          action: '',
+          profile: '',
+        },
+        {
+          text: 'Offline',
+          icon: 'mdi-check-circle',
+          action: '',
+          profile: '',
+        },
+        {
+          text: 'Uploads',
+          icon: 'mdi-upload',
+          action: '',
+          profile: '',
+        },
+        {
+          text: 'Backups',
+          icon: 'mdi-cloud-upload',
+          action: '',
+          profile: '',
+        },
+      ],
+    };
+  },
+  mounted() {
+    this.$store.dispatch('user/getUser', { email: this.$store.state.auth.user.email });
+  },
   computed: {
     user() {
-      return this.$store.getters['auth/user'];
+      return this.$store.getters['user/user'];
     },
     userNameInitials() {
       if (!this.user.name) return 'FG';
@@ -62,6 +116,12 @@ export default {
       }${
         nameSplit.length > 1 && nameSplit[nameSplit.length - 1].substr(0, 1)
       }`;
+    },
+  },
+  methods: {
+    checkAccess({ profile }) {
+      console.log('this.user.profile', this.user.profile)
+      return this.user.profile === 'all' || this.user.profile === profile;
     },
   },
 };
