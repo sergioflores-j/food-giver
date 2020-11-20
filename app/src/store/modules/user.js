@@ -10,7 +10,9 @@ export const user = {
     user: state => state.user,
   },
   actions: {
-    async getUser({ commit }, { email }) {
+    async getUser({ commit, state }, { email }) {
+      if (Object.keys(state.user).length) return state.user;
+
       try {
         const res = await get(email);
 

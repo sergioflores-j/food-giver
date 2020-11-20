@@ -5,7 +5,7 @@ import { sign } from 'jsonwebtoken';
 
 import UserDao from '@shared/dao/UserDao';
 
-const JWT_EXPIRATION_TIME = '1h';
+const JWT_EXPIRATION_TIME = '1d';
 const COMMON_ERROR = 'invalid email/password';
 
 /**

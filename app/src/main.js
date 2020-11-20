@@ -6,6 +6,14 @@ import router from './router';
 import store from './store';
 import vuetify from './plugins/vuetify';
 
+axios.interceptors.request.use(config => ({
+  ...config,
+  headers: {
+    ...config.headers,
+    Authorization: store.state.auth.token,
+  },
+}));
+
 // Add a response interceptor
 axios.interceptors.response.use(
   // Any status code that lie within the range of 2xx cause this function to trigger

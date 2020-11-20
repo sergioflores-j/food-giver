@@ -22,6 +22,7 @@
             :rules="formRules.emailRules"
             label="E-mail"
             name="email"
+            :loading="loading"
             clearable
             required
           />
@@ -39,6 +40,7 @@
             :type="showPwd ? 'text' : 'password'"
             name="password"
             label="Senha"
+            :loading="loading"
             @click:append="showPwd = !showPwd"
           />
         </v-col>
@@ -55,6 +57,7 @@
         <v-col class="d-flex justify-end">
           <v-btn
             :disabled="!valid"
+            :loading="loading"
             color="success"
             @click="submit"
           >
@@ -93,6 +96,7 @@ export default {
           v => /.+@.+\..+/.test(v) || 'E-mail inválido.',
         ],
       },
+      loading: false,
     };
   },
   methods: {
@@ -101,9 +105,15 @@ export default {
 
       if (!isValid) return;
 
+      this.loading = true;
+
       this.$store.dispatch('auth/login', { email: this.email, password: this.password })
         .then(() => this.$router.push('/'))
-        .catch(err => console.log(err));
+        .catch(err => console.log(err))
+        .finally(() => {
+          console.log('finally')
+          this.loading = false;
+        });
     },
   },
 };

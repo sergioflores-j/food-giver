@@ -23,7 +23,6 @@ export const auth = {
         .then(({ user, token }) => {
           localStorage.setItem('token', token);
           localStorage.setItem('user', JSON.stringify(user));
-          axios.defaults.headers.common.Authorization = token;
           commit('auth_success', { token, user });
           return user;
         },
@@ -39,7 +38,6 @@ export const auth = {
 
         localStorage.removeItem('user');
         localStorage.removeItem('token');
-        delete axios.defaults.headers.common.Authorization;
         resolve();
       });
     },
