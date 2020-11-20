@@ -7,7 +7,7 @@ export const create = async user => {
 };
 
 export const get = async email => {
-  const res = await axios.get(`${process.env.VUE_APP_USER_ENDPOINT}/${email}`);
+  const res = await axios.get(`${process.env.VUE_APP_USER_ENDPOINT}/${encodeURIComponent(email)}`);
 
   if (res.status === 200) return res.data;
 };

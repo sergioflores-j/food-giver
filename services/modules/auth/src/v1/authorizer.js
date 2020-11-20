@@ -36,6 +36,8 @@ export async function run(event) {
     const authorizerContext = { tokenContext: JSON.stringify(tokenContext) };
     const methodArn = generalizeResource(event.methodArn);
 
+    if (!tokenContext.user.email) throw new Error('Invalid token');
+
     const policyDocument = buildIAMPolicy({
       userId: tokenContext.user.email,
       effect,

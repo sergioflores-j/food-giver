@@ -7,18 +7,18 @@
       expand-on-hover
     >
       <v-list>
-        <v-list-item class="px-2">
-          <v-list-item-avatar>
-            <v-img src="https://randomuser.me/api/portraits/women/85.jpg" />
+        <v-list-item class="px-2 align-center justify-center">
+          <v-list-item-avatar color="purple" rounded>
+            {{ userNameInitials }}
           </v-list-item-avatar>
         </v-list-item>
 
-        <v-list-item link>
+        <v-list-item link to="/profile">
           <v-list-item-content>
-            <v-list-item-title class="title">
-              John Doe
+            <v-list-item-title v-if="user.name" class="title">
+              {{ user.name }}
             </v-list-item-title>
-            <v-list-item-subtitle>teste@gmail.com</v-list-item-subtitle>
+            <v-list-item-subtitle>{{ user.email }}</v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
       </v-list>
@@ -112,12 +112,23 @@ export default {
   components: {
     Navbar,
   },
-  data: () => ({
-    //
-  }),
   computed: {
     isAuthenticated() {
       return this.$store.getters['auth/isLoggedIn'];
+    },
+    user() {
+      return this.$store.getters['auth/user'];
+    },
+    userNameInitials() {
+      if (!this.user.name) return 'FG';
+
+      const nameSplit = this.user.name.split(' ');
+
+      return `${
+        nameSplit[0].substr(0, 1)
+      }${
+        nameSplit.length > 1 && nameSplit[nameSplit.length - 1].substr(0, 1)
+      }`;
     },
   },
 };
