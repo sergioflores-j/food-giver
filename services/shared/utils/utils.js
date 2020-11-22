@@ -102,6 +102,8 @@ const arrayToSqlString = (arr = []) => `(${arr.map(i => `'${i}'`).join(',')})`;
 
 const isEmail = arg => (/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(arg));
 
+const isPhone = arg => arg && (arg.length === 11 || arg.length === 10);
+
 const omit = (obj, props) => {
   const newObj = { ...obj };
 
@@ -238,6 +240,7 @@ module.exports = {
   setTimeoutPromise,
   arrayToSqlString,
   isEmail,
+  isPhone,
   set,
   toSqlDateTime,
   omit,

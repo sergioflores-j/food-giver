@@ -1,0 +1,38 @@
+[
+  {
+    "address": {
+      "city": "Jaraguá do Sul",
+      "complement": null,
+      "neighborhood": "Ilha da Figueira",
+      "number": "105",
+      "state": "SC",
+      "street": "Rua Rotary",
+      "zipCode": "89258443"
+    },
+    "email": "carolina.trindade@univille.edu.br",
+    "name": "Carolina Trindade",
+    "password": "81dc9bdb52d04dc20036dbd8313ed055",
+    "personalId": "12347854504",
+    "phone": "47999999999",
+    "profile": "giver"
+  },
+  {
+    "address": {
+      "city": "Aparecida de Goiânia",
+      "neighborhood": "Vila Adélia",
+      "number": "757",
+      "state": "GO",
+      "street": "Rua Humberto Teixeira",
+      "zipCode": "74986800"
+    },
+    "createdAt": "2020-08-14T00:35:33.062Z",
+    "email": "sergio.flores@univille.edu.br",
+    "federalId": "89878651002",
+    "isActive": true,
+    "name": "Sergio Eduardo Flores Junior",
+    "password": "81dc9bdb52d04dc20036dbd8313ed055",
+    "phone": "62989939024",
+    "profile": "all",
+    "updatedAt": "2020-08-14T00:35:33.062Z"
+  }
+]
