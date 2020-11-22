@@ -22,6 +22,7 @@
             :rules="formRules.emailRules"
             label="E-mail"
             name="email"
+            :loading="loading"
             clearable
             required
           />
@@ -39,6 +40,7 @@
             :type="showPwd ? 'text' : 'password'"
             name="password"
             label="Senha"
+            :loading="loading"
             @click:append="showPwd = !showPwd"
           />
         </v-col>
@@ -46,9 +48,6 @@
 
       <v-row>
         <v-col>
-          <span class="mr-1">
-            Novo por aqui?
-          </span>
           <router-link to="/register">
             Cadastre-se
           </router-link>
@@ -58,10 +57,13 @@
         <v-col class="d-flex justify-end">
           <v-btn
             :disabled="!valid"
+            :loading="loading"
             color="success"
             @click="submit"
           >
-            <v-icon left>mdi-login</v-icon>
+            <v-icon left>
+              mdi-login
+            </v-icon>
             Entrar
           </v-btn>
         </v-col>
@@ -94,19 +96,24 @@ export default {
           v => /.+@.+\..+/.test(v) || 'E-mail inválido.',
         ],
       },
+      loading: false,
     };
   },
   methods: {
     submit() {
-      this.$refs.form.validate();
+      const isValid = this.$refs.form.validate();
 
-      // TODO: chamar endpoint
-    },
-    reset() {
-      this.$refs.form.reset();
-    },
-    resetValidation() {
-      this.$refs.form.resetValidation();
+      if (!isValid) return;
+
+      this.loading = true;
+
+      this.$store.dispatch('auth/login', { email: this.email, password: this.password })
+        .then(() => this.$router.push('/'))
+        .catch(err => console.log(err))
+        .finally(() => {
+          console.log('finally')
+          this.loading = false;
+        });
     },
   },
 };

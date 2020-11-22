@@ -14,12 +14,14 @@ provider:
   logRetentionInDays: 7
   apiGateway:
     minimumCompressionSize: 102400 # Compress response when larger than specified size in bytes (must be between 0 and 10485760)
-  environment:
-    apikey: l1o2c3a4l5k6e7y
 
   # TODO: Configurar IAM
 
 functions:
+  customAuthorizer:
+    handler: src/v1/authorizer.run
+    memorySize: 128
+
   healthCheck:
     handler: src/v1/health/check.run
     memorySize: 128
@@ -27,6 +29,13 @@ functions:
       - http:
           path: /auth/health/check
           method: GET
+  login:
+    handler: src/v1/login.run
+    memorySize: 128
+    events:
+      - http:
+          path: /auth/login
+          method: POST
 
 custom:
   serverless-offline:
@@ -36,12 +45,15 @@ custom:
   prune:
     automatic: true
     number: 3
+  dotenv:
+    path: ../../shared/.env
   webpack:
     excludeFiles: 
       - src/**/*.test.js
       - test/**/*.test.js
 
 plugins:
+  - serverless-dotenv-plugin
   - serverless-webpack
   - serverless-offline
   - serverless-prune-plugin

@@ -1,7 +1,12 @@
 <template>
   <v-app>
-    <v-navigation-drawer app>
-      <!-- -->
+    <v-navigation-drawer
+      v-if="isAuthenticated"
+      app
+      permanent
+      expand-on-hover
+    >
+      <Sidebar />
     </v-navigation-drawer>
 
     <v-app-bar
@@ -10,22 +15,6 @@
       light
       show-drawer
     >
-      <div class="d-flex align-center">
-        <router-link to="/">
-          <v-img
-            alt="Vuetify Logo"
-            class="shrink mr-2"
-            contain
-            :src="require('./assets/logo.jpeg')"
-            transition="scale-transition"
-            width="50"
-          />
-        </router-link>
-        <v-spacer />
-      </div>
-
-      <v-spacer />
-
       <Navbar />
     </v-app-bar>
 
@@ -65,9 +54,12 @@ export default {
   name: 'App',
   components: {
     Navbar,
+    Sidebar: () => import('@/components/Sidebar.vue'),
   },
-  data: () => ({
-    //
-  }),
+  computed: {
+    isAuthenticated() {
+      return this.$store.getters['auth/isLoggedIn'];
+    },
+  },
 };
 </script>
