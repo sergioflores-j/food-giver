@@ -1,0 +1,17 @@
+[
+  {
+    "createdAt": "2020-08-14T00:38:05.287Z",
+    "donations": [
+      {
+        "donationId": "9dccc610-7fdb-42ca-b6e5-cf740c420fc1",
+        "userEmail": "sergio.flores@univille.edu.br"
+      }
+    ],
+    "finished": true,
+    "foodName": "Banana",
+    "necessityId": "86bf7b41-ca06-465c-94f5-7a758a3483be",
+    "quantity": 10,
+    "updatedAt": "2020-08-14T00:38:05.287Z",
+    "userEmail": "sergio.flores@univille.edu.br"
+  }
+]

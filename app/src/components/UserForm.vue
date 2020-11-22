@@ -1,137 +1,242 @@
 <template>
-  <v-form ref="form" v-model="valid">
-    <v-text-field
-      v-model="form.name"
-      :loading="loading"
-      label="Nome"
-      required
-      autofocus
-    />
+  <v-stepper v-model="step">
+    <v-stepper-header>
+      <v-stepper-step
+        step="1"
+        :complete="step > 1"
+        :editable="!isLoading && step > 1"
+      >
+        Conta Food Giver
+      </v-stepper-step>
+      <v-divider />
+      <v-stepper-step
+        step="2"
+        :complete="step > 2"
+        :editable="!isLoading && step > 2"
+      >
+        Dados pessoais
+      </v-stepper-step>
+      <v-divider />
+      <v-stepper-step
+        step="3"
+        :complete="step > 3"
+        :editable="!isLoading && step > 3"
+      >
+        Endereço
+      </v-stepper-step>
+    </v-stepper-header>
 
-    <v-text-field
-      v-model="form.email"
-      :loading="loading"
-      :rules="[formRules.required, ...formRules.emailRules]"
-      label="E-mail"
-      required
-    />
+    <v-stepper-items>
+      <v-stepper-content step="1">
+        <v-form ref="form" v-model="validStep[1]">
+          <v-text-field
+            v-model="form.email"
+            :loading="isLoading"
+            :rules="[formRules.required, ...formRules.emailRules]"
+            label="E-mail"
+            autofocus
+            required
+          />
 
-    <v-text-field
-      v-model="form.password"
-      :loading="loading"
-      :append-icon="showPwd ? 'mdi-eye' : 'mdi-eye-off'"
-      :rules="[formRules.required, formRules.passwordMatch]"
-      :type="showPwd ? 'text' : 'password'"
-      name="password"
-      label="Senha"
-      @click:append="showPwd = !showPwd"
-    />
+          <v-text-field
+            v-model="form.password"
+            :loading="isLoading"
+            :append-icon="showPwd ? 'mdi-eye' : 'mdi-eye-off'"
+            :rules="[formRules.required, passwordMatch]"
+            :type="showPwd ? 'text' : 'password'"
+            name="password"
+            label="Senha"
+            @click:append="showPwd = !showPwd"
+          />
 
-    <v-text-field
-      v-model="form.passwordConfirm"
-      :loading="loading"
-      :append-icon="showPwd ? 'mdi-eye' : 'mdi-eye-off'"
-      :rules="[formRules.required, formRules.passwordMatch]"
-      :type="showPwd ? 'text' : 'password'"
-      name="passwordConfirm"
-      label="Confirmar Senha"
-      @click:append="showPwd = !showPwd"
-    />
+          <v-text-field
+            v-model="form.passwordConfirm"
+            :loading="isLoading"
+            :append-icon="showPwd ? 'mdi-eye' : 'mdi-eye-off'"
+            :rules="[formRules.required, passwordMatch]"
+            :type="showPwd ? 'text' : 'password'"
+            name="passwordConfirm"
+            label="Confirmar Senha"
+            @click:append="showPwd = !showPwd"
+          />
 
-    <v-text-field
-      v-model="form.personalId"
-      :loading="loading"
-      :rules="[formRules.required, ...formRules.personalIdRules]"
-      type="tel"
-      label="CPF/CNPJ"
-      required
-    />
+          <v-select
+            v-model="form.profile"
+            :loading="isLoading"
+            :items="profiles"
+            :rules="[formRules.required]"
+            label="Perfil"
+            required
+          />
 
-    <v-text-field
-      v-model="form.phone"
-      :loading="loading"
-      :rules="[formRules.required, ...formRules.phoneRules]"
-      type="tel"
-      label="Telefone/Celular"
-      required
-    />
+          <v-alert v-if="existentUserError === this.form.email" type="warning">
+            Usuário já cadastrado!
+          </v-alert>
 
-    <v-text-field
-      v-model="form.address.street"
-      :loading="loading"
-      :rules="[formRules.required]"
-      label="Rua"
-      required
-    />
-    <v-text-field
-      v-model="form.address.number"
-      :loading="loading"
-      :rules="[formRules.required]"
-      label="Número"
-      required
-    />
-    <v-text-field
-      v-model="form.address.zipCode"
-      label="CEP"
-      :loading="loading"
-    />
-    <v-text-field
-      v-model="form.address.complement"
-      label="Complemento"
-      :loading="loading"
-    />
-    <v-text-field
-      v-model="form.address.city"
-      :loading="loading"
-      :rules="[formRules.required]"
-      label="Cidade"
-      required
-    />
+          <div class="action-buttons">
+            <v-btn
+              color="primary"
+              :disabled="!validStep[1]"
+              @click.native="submitFirstStep"
+            >
+              Continuar
+            </v-btn>
+          </div>
+        </v-form>
+      </v-stepper-content>
+      <v-stepper-content step="2">
+        <v-form ref="form" v-model="validStep[2]">
+          <v-text-field
+            v-model="form.name"
+            :loading="isLoading"
+            label="Nome"
+            required
+            autofocus
+          />
 
-    <v-select
-      v-model="form.address.state"
-      :loading="loading"
-      :items="states"
-      :rules="[formRules.required]"
-      label="Estado"
-      required
-    />
+          <v-text-field
+            v-model="form.federalId"
+            :loading="isLoading"
+            :rules="[formRules.required, ...formRules.personalIdRules]"
+            type="tel"
+            label="CPF/CNPJ"
+            required
+          />
 
-    <v-select
-      v-model="form.profile"
-      :loading="loading"
-      :items="profiles"
-      :rules="[formRules.required]"
-      label="Perfil"
-      required
-    />
+          <v-text-field
+            v-model="form.phone"
+            :loading="isLoading"
+            :rules="[formRules.required, ...formRules.phoneRules]"
+            type="tel"
+            label="Telefone/Celular"
+            required
+          />
 
-    <v-btn :disabled="!valid" :loading="loading" @click="submit">
-      Enviar
-    </v-btn>
-  </v-form>
+          <div class="action-buttons">
+            <v-btn text @click.native="step = 1">
+              Voltar
+            </v-btn>
+            <v-btn
+              color="primary"
+              :disabled="!validStep[2]"
+              @click.native="step = 3"
+            >
+              Continuar
+            </v-btn>
+          </div>
+        </v-form>
+      </v-stepper-content>
+
+      <v-stepper-content step="3">
+        <v-form ref="form" v-model="validStep[3]">
+          <v-text-field
+            v-model="form.address.street"
+            :loading="isLoading"
+            :rules="[formRules.required]"
+            label="Rua"
+            autofocus
+            required
+          />
+          <v-text-field
+            v-model="form.address.number"
+            :loading="isLoading"
+            :rules="[formRules.required]"
+            label="Número"
+            required
+          />
+          <v-text-field
+            v-model="form.address.zipCode"
+            label="CEP"
+            :loading="isLoading"
+          />
+          <v-text-field
+            v-model="form.address.complement"
+            label="Complemento"
+            :loading="isLoading"
+          />
+          <v-text-field
+            v-model="form.address.neighborhood"
+            :loading="isLoading"
+            :rules="[formRules.required]"
+            label="Bairro"
+            required
+          />
+          <v-text-field
+            v-model="form.address.city"
+            :loading="isLoading"
+            :rules="[formRules.required]"
+            label="Cidade"
+            required
+          />
+          <v-select
+            v-model="form.address.state"
+            :loading="isLoading"
+            :items="states"
+            :rules="[formRules.required]"
+            label="Estado"
+            required
+          />
+
+          <v-alert v-if="errors.length" type="error">
+            Não foi possível criar seu usuário devido ao seguintes motivos:
+
+            <ul>
+              <li v-for="error of errors" :key="error">
+                {{ error }}
+              </li>
+            </ul>
+          </v-alert>
+
+          <div class="action-buttons">
+            <v-btn text @click.native="step = 2">
+              Voltar
+            </v-btn>
+
+            <v-btn
+              color="primary"
+              :disabled="!validStep[3]"
+              :loading="isLoading"
+              @click="submit"
+            >
+              Enviar
+            </v-btn>
+          </div>
+        </v-form>
+      </v-stepper-content>
+    </v-stepper-items>
+  </v-stepper>
 </template>
 
 <script>
 import { isEmail, isCpfCnpj, isPhone } from '@/utils/validation';
 import profiles from '@/constants/profiles';
 import states from '@/constants/states';
+import { checkExistentUser } from '@/services/user';
 
 export default {
   name: 'UserForm',
   props: {
     loading: { type: Boolean, default: false },
+    errors: { type: Array, default: () => [] },
   },
   data() {
     return {
-      valid: true,
+      internalLoading: false,
+      validStep: {
+        1: true,
+        2: true,
+        3: true,
+        4: true,
+      },
+      existentUserError: false,
+      step: 1,
       showPwd: false,
       form: {
         name: '',
         email: '',
         password: '',
         passwordConfirm: '',
-        personalId: '',
+        federalId: '',
         phone: '',
         address: {
           street: '',
@@ -159,34 +264,44 @@ export default {
         personalIdRules: [
           v => isCpfCnpj(v) || 'CNPJ/CPF inválido',
         ],
-        passwordMatch: v => {
-          // TODO: verificar bug com essa rule
-          console.log('p', this.form.password, '- c', this.form.passwordConfirm);
-          console.log('this.form.password === this.form.passwordConfirm', this.form.password === this.form.passwordConfirm);
-          console.log('v', v);
-          return this.form.password === this.form.passwordConfirm || 'Senhas não combinam';
-        },
       },
     };
   },
-  mounted() {
-    this.resetValidation();
+  computed: {
+    isLoading() {
+      return this.internalLoading || this.loading;
+    },
+    passwordMatch() {
+      return this.form.password === this.form.passwordConfirm || 'Senhas não combinam';
+    },
   },
   methods: {
     submit() {
-      this.$refs.form.validate();
-
       this.$emit('submit', { ...this.form });
     },
-    // reset() {
-    //   this.$refs.form.reset();
-    // },
-    resetValidation() {
-      this.$refs.form.resetValidation();
+    async submitFirstStep() {
+      if (this.form.email === this.existentUserError) return;
+
+      this.internalLoading = true;
+      const { exists } = await checkExistentUser(this.form.email);
+      this.internalLoading = false;
+
+      if (exists) {
+        this.existentUserError = this.form.email;
+
+        return;
+      }
+
+      this.step = 2;
     },
   },
 };
 </script>
 
 <style lang="scss" scoped>
+.action-buttons {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
 </style>

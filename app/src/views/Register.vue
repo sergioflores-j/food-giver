@@ -2,6 +2,7 @@
   <v-container>
     <user-form
       :loading="loading"
+      :errors="errors"
       @submit="submit"
     />
   </v-container>
@@ -9,7 +10,7 @@
 
 <script>
 import UserForm from '@/components/UserForm.vue';
-import UserService from '@/services/UserService';
+import { create } from '@/services/user';
 
 export default {
   name: 'Register',
@@ -19,6 +20,7 @@ export default {
   data() {
     return {
       loading: false,
+      errors: [],
     };
   },
   methods: {
@@ -26,16 +28,16 @@ export default {
       this.loading = true;
 
       try {
-        await UserService.create(user);
+        await create(user);
 
         // TODO: Notificar que criou o usuário
         // TODO: realizar login
 
         // ? Envia para a página inicial
         this.$router.push('/');
-      } catch (error) {
-        console.error('error', error);
-        // TODO: handle error
+      } catch (err) {
+        if (err.response?.data?.error?.errors)
+          this.errors = err.response.data.error.errors;
       } finally {
         this.loading = false;
       }

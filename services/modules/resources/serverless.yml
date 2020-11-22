@@ -14,8 +14,6 @@ provider:
   logRetentionInDays: 7
   apiGateway:
     minimumCompressionSize: 102400 # Compress response when larger than specified size in bytes (must be between 0 and 10485760)
-  environment:
-    apikey: l1o2c3a4l5k6e7y
 
   # TODO: Configurar IAM
 
@@ -33,16 +31,25 @@ custom:
     start:
       port: 8000
       migrate: true
-      seed: false # deve ser true, quando existir arquivos de seed.
+      seed: true
       convertEmptyValues: true
     stages:
       - api
-    # Descomentar quando existir os arquivos de seed
-    # seed:
-    #   domain:
-    #     sources:
-    #       - table: FG.User
-    #         sources: [./data/FG.User.json]
+    seed:
+      domain:
+        sources:
+          - table: FG.Chat
+            sources: [./test/_fixtures/FG.Chat.json]
+          - table: FG.ChatMessage
+            sources: [./test/_fixtures/FG.ChatMessage.json]
+          - table: FG.Donation
+            sources: [./test/_fixtures/FG.Donation.json]
+          - table: FG.Food
+            sources: [./test/_fixtures/FG.Food.json]
+          - table: FG.Necessity
+            sources: [./test/_fixtures/FG.Necessity.json]
+          - table: FG.User
+            sources: [./test/_fixtures/FG.User.json]
   serverless-offline:
     port: ${file(../../../dev.serverless.env.json):port.resources}
   # Deletes all previous versions of the functions except for the last 'number' after deploy
@@ -50,12 +57,15 @@ custom:
   prune:
     automatic: true
     number: 3
+  dotenv:
+    path: ../../shared/.env
   webpack:
     excludeFiles: 
       - src/**/*.test.js
       - test/**/*.test.js
 
 plugins:
+  - serverless-dotenv-plugin
   - serverless-dynamodb-local
   - serverless-webpack
   - serverless-offline

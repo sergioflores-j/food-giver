@@ -11,14 +11,75 @@ Resources:
           KeyType: HASH
       BillingMode: PAY_PER_REQUEST
 
+  tableFGNecessity:
+    Type: 'AWS::DynamoDB::Table'
+    Properties:
+      TableName: FG.Necessity
+      AttributeDefinitions:
+        - AttributeName: userEmail
+          AttributeType: S
+        - AttributeName: necessityId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: userEmail
+          KeyType: HASH
+        - AttributeName: necessityId
+          KeyType: RANGE
+      BillingMode: PAY_PER_REQUEST
+
+  tableFGFood:
+    Type: 'AWS::DynamoDB::Table'
+    Properties:
+      TableName: FG.Food
+      AttributeDefinitions:
+        - AttributeName: name
+          AttributeType: S
+      KeySchema:
+        - AttributeName: name
+          KeyType: HASH
+      BillingMode: PAY_PER_REQUEST
+
   tableFGDonation:
     Type: 'AWS::DynamoDB::Table'
     Properties:
       TableName: FG.Donation
       AttributeDefinitions:
+        - AttributeName: userEmail
+          AttributeType: S
         - AttributeName: donationId
-          AttributeType: N
+          AttributeType: S
       KeySchema:
+        - AttributeName: userEmail
+          KeyType: HASH
         - AttributeName: donationId
+          KeyType: RANGE
+      BillingMode: PAY_PER_REQUEST
+
+  tableFGChat:
+    Type: 'AWS::DynamoDB::Table'
+    Properties:
+      TableName: FG.Chat
+      AttributeDefinitions:
+        - AttributeName: chatId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: chatId
           KeyType: HASH
       BillingMode: PAY_PER_REQUEST
+
+  tableFGChatMessage:
+    Type: 'AWS::DynamoDB::Table'
+    Properties:
+      TableName: FG.ChatMessage
+      AttributeDefinitions:
+        - AttributeName: chatId
+          AttributeType: S
+        - AttributeName: messageId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: chatId
+          KeyType: HASH
+        - AttributeName: messageId
+          KeyType: RANGE
+      BillingMode: PAY_PER_REQUEST
+  
