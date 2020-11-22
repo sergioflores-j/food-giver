@@ -9,6 +9,7 @@ provider:
   region: us-east-1
   stage: api
   timeout: 30
+  memorySize: 128
   tags:
     ms: food-giver-donation
   logRetentionInDays: 7
@@ -21,11 +22,9 @@ functions:
   customAuthorizer:
     # TODO: find a better way (not arn :/)
     handler: ../auth/src/v1/authorizer.run
-    memorySize: 128
 
   healthCheck:
     handler: src/v1/health/check.run
-    memorySize: 128
     events:
       - http:
           path: /donation/health/check
@@ -33,7 +32,6 @@ functions:
 
   createDonation:
     handler: src/v1/create.run
-    # memorySize: 128
     events:
       - http:
           path: /donation
