@@ -1,0 +1,50 @@
+version: 2
+update_configs:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    commit-message:
+      prefix: "[skip-ci]"
+
+  - package-ecosystem: "npm"
+    directory: "/app"
+    schedule:
+      interval: "monthly"
+    commit-message:
+      prefix: "[skip-ci]"
+
+  - package-ecosystem: "npm"
+    directory: "/services"
+    schedule:
+      interval: "monthly"
+    commit-message:
+      prefix: "[skip-ci]"
+
+  - package-ecosystem: "npm"
+    directory: "/services/modules/auth"
+    schedule:
+      interval: "monthly"
+    commit-message:
+      prefix: "[skip-ci]"
+
+  - package-ecosystem: "npm"
+    directory: "/services/modules/donation"
+    schedule:
+      interval: "monthly"
+    commit-message:
+      prefix: "[skip-ci]"
+
+  - package-ecosystem: "npm"
+    directory: "/services/modules/resources"
+    schedule:
+      interval: "monthly"
+    commit-message:
+      prefix: "[skip-ci]"
+  
+  - package-ecosystem: "npm"
+    directory: "/services/modules/user"
+    schedule:
+      interval: "monthly"
+    commit-message:
+      prefix: "[skip-ci]"
