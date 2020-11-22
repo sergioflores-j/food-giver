@@ -16,7 +16,15 @@ const objToStr = arg => ((isString(arg)) ? arg : JSON.stringify(arg));
 
 const toSqlDateTime = date => new Date(date).toISOString().slice(0, 19).replace('T', ' ');
 
-const lambdaResp = (statusCode, body) => ({ statusCode, ...(body ? { body: objToStr(body) } : '') });
+const lambdaResp = (statusCode, body) => ({
+  statusCode,
+  ...(body ? { body: objToStr(body) } : ''),
+  headers: {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET,POST,PUT,DELETE,HEAD,PATCH,OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,Authorization',
+  },
+});
 
 const generateHash = arg => crypto.createHash('md5').update(arg).digest('hex');
 

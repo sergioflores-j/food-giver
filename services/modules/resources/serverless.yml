@@ -25,6 +25,7 @@ functions:
       - http:
           path: /resources/health/check
           method: GET
+          cors: true
 
 custom:
   dynamodb:

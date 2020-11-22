@@ -29,6 +29,7 @@ functions:
       - http:
           path: /donation/health/check
           method: GET
+          cors: true
 
   createDonation:
     handler: src/v1/create.run
@@ -36,6 +37,7 @@ functions:
       - http:
           path: /donation
           method: POST
+          cors: true
 
 custom:
   serverless-offline:

@@ -29,6 +29,7 @@ functions:
       - http:
           path: /user/health/check
           method: GET
+          cors: true
   createUser:
     handler: src/v1/create.run
     memorySize: 128
@@ -36,6 +37,7 @@ functions:
       - http:
           path: /user
           method: POST
+          cors: true
   checkExistentUser:
     handler: src/v1/checkExistentUser.run
     memorySize: 128
@@ -43,6 +45,7 @@ functions:
       - http:
           path: /user/{email}/check
           method: GET
+          cors: true
   getUser:
     handler: src/v1/get.run
     memorySize: 128
@@ -51,6 +54,7 @@ functions:
           path: /user/{email}
           method: GET
           authorizer: customAuthorizer
+          cors: true
 
 custom:
   serverless-offline:

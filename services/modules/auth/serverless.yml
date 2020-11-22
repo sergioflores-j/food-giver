@@ -29,6 +29,7 @@ functions:
       - http:
           path: /auth/health/check
           method: GET
+          cors: true
   login:
     handler: src/v1/login.run
     memorySize: 128
@@ -36,6 +37,7 @@ functions:
       - http:
           path: /auth/login
           method: POST
+          cors: true
 
 custom:
   serverless-offline:
