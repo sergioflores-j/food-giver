@@ -25,6 +25,7 @@
             :loading="loading"
             clearable
             required
+            autofocus
           />
         </v-col>
 

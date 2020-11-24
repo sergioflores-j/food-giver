@@ -1,21 +1,22 @@
 <template>
-  <div class="sidebar-wrapper">
-    <v-list>
-      <v-list-item class="px-2 align-center justify-center">
-        <v-list-item-avatar color="purple" rounded style="margin-left: 10px;">
-          {{ userNameInitials }}
-        </v-list-item-avatar>
-      </v-list-item>
+  <v-list>
+    <v-list-item to="/profile" class="px-2">
+      <v-list-item-avatar
+        color="purple"
+        rounded
+        left
+        :min-height="50"
+      >
+        {{ userNameInitials }}
+      </v-list-item-avatar>
 
-      <v-list-item link to="/profile">
-        <v-list-item-content>
-          <v-list-item-title v-if="user.name" class="title">
-            {{ user.name }}
-          </v-list-item-title>
-          <v-list-item-subtitle>{{ user.email }}</v-list-item-subtitle>
-        </v-list-item-content>
-      </v-list-item>
-    </v-list>
+      <v-list-item-content>
+        <v-list-item-title v-if="user.name" class="title">
+          {{ user.name }}
+        </v-list-item-title>
+        <v-list-item-subtitle>{{ user.email }}</v-list-item-subtitle>
+      </v-list-item-content>
+    </v-list-item>
 
     <v-divider />
 
@@ -23,27 +24,24 @@
       nav
       dense
     >
-      <v-list-item-group
-        v-model="selectedItem"
-        color="primary"
-      >
-        <template v-for="(item, i) in actions">
-          <v-list-item
-            v-if="checkAccess(item)"
-            :key="i"
-          >
-            <v-list-item-icon>
-              <v-icon v-text="item.icon" />
-            </v-list-item-icon>
+      <template v-for="(item, i) in actions">
+        <v-list-item
+          v-if="checkAccess(item)"
+          :to="item.action"
+          active-class="primary--text"
+          :key="i"
+        >
+          <v-list-item-icon>
+            <v-icon v-text="item.icon" />
+          </v-list-item-icon>
 
-            <v-list-item-content>
-              <v-list-item-title v-text="item.text" />
-            </v-list-item-content>
-          </v-list-item>
-        </template>
-      </v-list-item-group>
+          <v-list-item-content>
+            <v-list-item-title v-text="item.text" />
+          </v-list-item-content>
+        </v-list-item>
+      </template>
     </v-list>
-  </div>
+  </v-list>
 </template>
 
 <script>
@@ -51,17 +49,15 @@ export default {
   name: 'Sidebar',
   data() {
     return {
-      // TODO:
-      selectedItem: 0,
       actions: [
         {
-          text: 'My Files',
-          icon: 'mdi-folder',
-          action: '',
-          profile: '',
+          text: 'Doações',
+          icon: 'mdi-handshake',
+          action: '/donations',
+          profile: 'giver',
         },
         {
-          text: 'Shared with me',
+          text: 'Necessidades',
           icon: 'mdi-account-multiple',
           action: '',
           profile: '',
@@ -120,7 +116,6 @@ export default {
   },
   methods: {
     checkAccess({ profile }) {
-      console.log('this.user.profile', this.user.profile)
       return this.user.profile === 'all' || this.user.profile === profile;
     },
   },
