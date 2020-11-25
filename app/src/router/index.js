@@ -44,17 +44,21 @@ const routes = [
   },
   {
     path: '/donations',
-    name: 'Donations',
     meta: {
       requiresAuth: true,
     },
-    // children: [
-    //   {
-    //     path: '/new',
-    //     name: 'Donations_New',
-    //     component: () => import(/* webpackChunkName: "donation" */ '../views/Donation/NewDonation.vue'),
-    //   },
-    // ],
+    children: [
+      {
+        path: '',
+        name: 'Donations_list',
+        component: () => import(/* webpackChunkName: "donation" */ '../views/Donation/DonationList.vue'),
+      },
+      {
+        path: 'new',
+        name: 'Donations_New',
+        component: () => import(/* webpackChunkName: "donation" */ '../views/Donation/NewDonation.vue'),
+      },
+    ],
     component: () => import(/* webpackChunkName: "donation" */ '../views/Donation/Donation.vue'),
   },
 ];
