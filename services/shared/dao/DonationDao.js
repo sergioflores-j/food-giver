@@ -23,6 +23,19 @@ module.exports = class DonationDao extends GenericDao {
     });
   }
 
+  query({ userEmail, fields = [] } = {}) {
+    return this._query({
+      params: {
+        TableName: TABLE_NAME,
+        KeyConditionExpression: 'userEmail = :userEmail',
+        ExpressionAttributeValues: {
+          ':userEmail': userEmail,
+        },
+      },
+      fields,
+    });
+  }
+
   delete({ userEmail, donationId } = {}) {
     return this._.delete({
       params: {

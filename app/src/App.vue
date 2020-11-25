@@ -21,7 +21,6 @@
 
     <v-main>
       <v-container fluid>
-        <!-- If using vue-router -->
         <transition name="slide-x-reverse-transition" mode="out-in">
           <router-view :key="$route.fullPath" />
         </transition>

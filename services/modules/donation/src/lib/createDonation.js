@@ -10,18 +10,22 @@ import donationSchema from '@shared/schemas/donation';
 /**
  * @param {object} param0
  * @param {import('../../../../../types/Donation').Donation} param0.donation
+ * @param {string} param0.userEmail
  */
-export const create = async ({ donation }) => {
-  checkParameters({ donation });
+export const create = async ({ donation, userEmail }) => {
+  checkParameters({ donation, userEmail });
 
-  return run({ donation });
+  return run({ donation, userEmail });
 };
 
-export const run = async ({ donation }) => {
+export const run = async ({ userEmail, donation }) => {
   try {
+    // TODO: check if user exists?
+
     const donationItem = {
       ...donation,
       donationId: uuid(),
+      userEmail,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
@@ -40,9 +44,10 @@ export const run = async ({ donation }) => {
   }
 };
 
-const checkParameters = ({ donation }) => {
+const checkParameters = ({ userEmail, donation }) => {
   const errors = {};
 
+  if (!userEmail) errors.userEmail = 'undefined';
   if (!donation) errors.donation = 'undefined';
   else if (!isObject(donation)) errors.donation = 'is not an object';
 

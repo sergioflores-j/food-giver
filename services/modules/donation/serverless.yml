@@ -35,8 +35,15 @@ functions:
     handler: src/v1/create.run
     events:
       - http:
-          path: /donation
+          path: /donation/v1/{userEmail}/donations
           method: POST
+          cors: true
+  getDonations:
+    handler: src/v1/list.run
+    events:
+      - http:
+          path: /donation/v1/{userEmail}/donations
+          method: GET
           cors: true
 
 custom:
