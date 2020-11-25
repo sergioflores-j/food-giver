@@ -16,13 +16,16 @@ export const list = async ({ userEmail }) => {
 
 export const run = async ({ userEmail }) => {
   try {
-    const donations = await new DonationDao().query({ userEmail });
+    const donations = await new DonationDao().query({
+      userEmail,
+      fields: ['donationId', 'foodName', 'condition', 'createdAt', 'updatedAt'],
+    });
 
     return { donations };
   } catch (err) {
     console.log('Error ListDonations Run', err);
     console.log('Params: ', {
-      donation,
+      userEmail,
     });
     throw err;
   }
