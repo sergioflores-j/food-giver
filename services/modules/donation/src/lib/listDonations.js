@@ -18,7 +18,7 @@ export const run = async ({ userEmail }) => {
   try {
     const donations = await new DonationDao().query({
       userEmail,
-      fields: ['donationId', 'foodName', 'condition', 'createdAt', 'updatedAt'],
+      fields: ['donationId', 'foodName', 'condition', 'createdAt', 'updatedAt', 'expiresAt'],
     });
 
     return { donations };

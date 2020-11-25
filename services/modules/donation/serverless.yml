@@ -38,6 +38,8 @@ functions:
           path: /donation/v1/{userEmail}/donations
           method: POST
           cors: true
+          authorizer: customAuthorizer
+
   getDonations:
     handler: src/v1/list.run
     events:
@@ -45,6 +47,7 @@ functions:
           path: /donation/v1/{userEmail}/donations
           method: GET
           cors: true
+          authorizer: customAuthorizer
 
 custom:
   serverless-offline:

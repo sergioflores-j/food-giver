@@ -42,6 +42,7 @@
             name="password"
             label="Senha"
             :loading="loading"
+            @keydown.enter="submit"
             @click:append="showPwd = !showPwd"
           />
         </v-col>
