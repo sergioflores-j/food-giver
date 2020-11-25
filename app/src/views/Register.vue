@@ -1,5 +1,11 @@
 <template>
   <v-container>
+    <v-alert outlined type="info">
+      Já é cadastrado?
+      <router-link to="/login">
+        Ir para o login.
+      </router-link>
+    </v-alert>
     <user-form
       :loading="loading"
       :errors="errors"

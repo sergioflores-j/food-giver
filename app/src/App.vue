@@ -16,7 +16,7 @@
       light
       show-drawer
     >
-      <Navbar :show-collapse-toggle="isMobile" v-model="drawer" />
+      <Navbar v-model="drawer" :show-collapse-toggle="isMobile && isAuthenticated" />
     </v-app-bar>
 
     <v-main>
