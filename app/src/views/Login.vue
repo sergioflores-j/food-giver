@@ -11,6 +11,10 @@
         </v-col>
       </v-row>
 
+      <v-alert v-if="error" type="error">
+        {{ error }}
+      </v-alert>
+
       <v-row>
         <v-col
           cols="12"
@@ -86,6 +90,7 @@ export default {
     return {
       valid: true,
       showPwd: false,
+      error: '',
       email: '',
       password: '',
       formRules: {
@@ -108,12 +113,17 @@ export default {
       if (!isValid) return;
 
       this.loading = true;
+      this.error = '';
 
       this.$store.dispatch('auth/login', { email: this.email, password: this.password })
         .then(() => this.$router.push('/'))
-        .catch(err => console.log(err))
+        .catch(err => {
+          const errMessage = err.response.data?.error?.message;
+
+          if (err.response.status === 401) this.error = 'Usuário e/ou senha inválidos';
+          else this.error = `Ocorreu um erro. ${errMessage ? `(${errMessage})` : ''}`;
+        })
         .finally(() => {
-          console.log('finally')
           this.loading = false;
         });
     },
