@@ -14,8 +14,8 @@ provider:
   logRetentionInDays: 7
   apiGateway:
     minimumCompressionSize: 102400 # Compress response when larger than specified size in bytes (must be between 0 and 10485760)
-
-  # TODO: Configurar IAM
+  iamRoleStatements:
+    ${file(../../shared/serverless-config.yml):iamRoleStatements}
 
 functions:
   customAuthorizer:
@@ -29,6 +29,7 @@ functions:
       - http:
           path: /auth/health/check
           method: GET
+          cors: true
   login:
     handler: src/v1/login.run
     memorySize: 128
@@ -36,6 +37,7 @@ functions:
       - http:
           path: /auth/login
           method: POST
+          cors: true
 
 custom:
   serverless-offline:

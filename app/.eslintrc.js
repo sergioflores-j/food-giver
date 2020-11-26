@@ -3,7 +3,7 @@ module.exports = {
   env: {
     node: true,
   },
-  extends: ['plugin:vue/strongly-recommended', '@vue/airbnb'],
+  extends: ['plugin:vue/recommended', '@vue/airbnb'],
   parserOptions: {
     parser: 'babel-eslint',
   },
