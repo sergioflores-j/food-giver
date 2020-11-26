@@ -24,7 +24,6 @@
       :headers="headers"
       :items="list"
       :items-per-page="5"
-      locale="pt-BR"
       item-key="donationId"
       show-select
       :single-select="singleSelect"
