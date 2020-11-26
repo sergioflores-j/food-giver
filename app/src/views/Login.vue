@@ -25,6 +25,7 @@
             :loading="loading"
             clearable
             required
+            autofocus
           />
         </v-col>
 
@@ -41,6 +42,7 @@
             name="password"
             label="Senha"
             :loading="loading"
+            @keydown.enter="submit"
             @click:append="showPwd = !showPwd"
           />
         </v-col>

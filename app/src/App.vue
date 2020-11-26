@@ -2,9 +2,10 @@
   <v-app>
     <v-navigation-drawer
       v-if="isAuthenticated"
+      v-model="drawer"
       app
-      permanent
-      expand-on-hover
+      :permanent="!isMobile"
+      :expand-on-hover="!isMobile"
     >
       <Sidebar />
     </v-navigation-drawer>
@@ -15,12 +16,11 @@
       light
       show-drawer
     >
-      <Navbar />
+      <Navbar v-model="drawer" :show-collapse-toggle="isMobile && isAuthenticated" />
     </v-app-bar>
 
     <v-main>
       <v-container fluid>
-        <!-- If using vue-router -->
         <transition name="slide-x-reverse-transition" mode="out-in">
           <router-view :key="$route.fullPath" />
         </transition>
@@ -56,9 +56,35 @@ export default {
     Navbar,
     Sidebar: () => import('@/components/Sidebar.vue'),
   },
+  data() {
+    return {
+      drawer: true,
+      windowWidth: window.innerWidth,
+    };
+  },
   computed: {
     isAuthenticated() {
       return this.$store.getters['auth/isLoggedIn'];
+    },
+    isMobile() {
+      return this.windowWidth < 768;
+    },
+  },
+  mounted() {
+    window.addEventListener('resize', this.changeWindowWidth);
+  },
+  beforeDestroy() {
+    window.removeEventListener('resize', this.changeWindowWidth);
+  },
+  methods: {
+    changeWindowWidth(e) {
+      if (!e) return this.windowWidth;
+
+      const { target } = e;
+
+      this.windowWidth = target.innerWidth;
+
+      return this.windowWidth;
     },
   },
 };

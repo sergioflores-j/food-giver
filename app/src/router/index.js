@@ -42,6 +42,25 @@ const routes = [
     },
     component: () => import(/* webpackChunkName: "register" */ '../views/Register.vue'),
   },
+  {
+    path: '/donations',
+    meta: {
+      requiresAuth: true,
+    },
+    children: [
+      {
+        path: '',
+        name: 'Donations_list',
+        component: () => import(/* webpackChunkName: "donation" */ '../views/Donation/DonationList.vue'),
+      },
+      {
+        path: 'new',
+        name: 'Donations_New',
+        component: () => import(/* webpackChunkName: "donation" */ '../views/Donation/NewDonation.vue'),
+      },
+    ],
+    component: () => import(/* webpackChunkName: "donation" */ '../views/Donation/Donation.vue'),
+  },
 ];
 
 const router = new VueRouter({

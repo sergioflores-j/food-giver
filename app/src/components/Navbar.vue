@@ -1,15 +1,6 @@
 <template>
   <div class="d-flex justify-space-between" style="width: 100%;">
-    <router-link to="/">
-      <v-img
-        alt="Logo Food Giver"
-        class="shrink mr-2"
-        contain
-        :src="logo"
-        transition="scale-transition"
-        width="50"
-      />
-    </router-link>
+    <v-app-bar-nav-icon v-if="showCollapseToggle" @click.stop="() => drawer = !drawer" />
 
     <v-spacer />
 
@@ -24,6 +15,10 @@ import logo from '@/assets/logo.jpeg';
 
 export default {
   name: 'Navbar',
+  props: {
+    value: { type: Boolean, default: true },
+    showCollapseToggle: { type: Boolean, default: true },
+  },
   data() {
     return {
       logo,
@@ -32,6 +27,14 @@ export default {
   computed: {
     isAuthenticated() {
       return this.$store.getters['auth/isLoggedIn'];
+    },
+    drawer: {
+      get() {
+        return this.value;
+      },
+      set(val) {
+        this.$emit('input', val);
+      },
     },
   },
   methods: {

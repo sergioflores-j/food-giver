@@ -1,4 +1,4 @@
-service: food-giver-resources
+service: food-giver-donation
 package:
   exclude:
     - node_modules/aws-sdk/**
@@ -9,8 +9,9 @@ provider:
   region: us-east-1
   stage: api
   timeout: 30
+  memorySize: 128
   tags:
-    ms: food-giver-resources
+    ms: food-giver-donation
   logRetentionInDays: 7
   apiGateway:
     minimumCompressionSize: 102400 # Compress response when larger than specified size in bytes (must be between 0 and 10485760)
@@ -18,41 +19,39 @@ provider:
     ${file(../../shared/serverless-config.yml):iamRoleStatements}
 
 functions:
+  customAuthorizer:
+    # TODO: find a better way (not arn :/)
+    handler: ../auth/src/v1/authorizer.run
+
   healthCheck:
     handler: src/v1/health/check.run
-    memorySize: 128
     events:
       - http:
-          path: /resources/health/check
+          path: /donation/health/check
           method: GET
           cors: true
 
+  createDonation:
+    handler: src/v1/create.run
+    events:
+      - http:
+          path: /donation/v1/{userEmail}/donations
+          method: POST
+          cors: true
+          authorizer: customAuthorizer
+
+  getDonations:
+    handler: src/v1/list.run
+    events:
+      - http:
+          path: /donation/v1/{userEmail}/donations
+          method: GET
+          cors: true
+          authorizer: customAuthorizer
+
 custom:
-  dynamodb:
-    start:
-      port: 8000
-      migrate: true
-      seed: true
-      convertEmptyValues: true
-    stages:
-      - api
-    seed:
-      domain:
-        sources:
-          - table: FG.Chat
-            sources: [./test/_fixtures/FG.Chat.json]
-          - table: FG.ChatMessage
-            sources: [./test/_fixtures/FG.ChatMessage.json]
-          - table: FG.Donation
-            sources: [./test/_fixtures/FG.Donation.json]
-          - table: FG.Food
-            sources: [./test/_fixtures/FG.Food.json]
-          - table: FG.Necessity
-            sources: [./test/_fixtures/FG.Necessity.json]
-          - table: FG.User
-            sources: [./test/_fixtures/FG.User.json]
   serverless-offline:
-    port: ${file(../../../dev.serverless.env.json):port.resources}
+    port: ${file(../../../dev.serverless.env.json):port.donation}
   # Deletes all previous versions of the functions except for the last 'number' after deploy
   # Prevents the error: CodeStorageExceededException
   prune:
@@ -67,10 +66,7 @@ custom:
 
 plugins:
   - serverless-dotenv-plugin
-  - serverless-dynamodb-local
   - serverless-webpack
   - serverless-offline
   - serverless-prune-plugin
 
-resources:
-  - ${file(./db.yml)}
