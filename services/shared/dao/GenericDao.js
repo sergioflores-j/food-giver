@@ -4,7 +4,9 @@ const { mountProjectionExpression } = require('../utils/dynamo');
 
 module.exports = class GenericDao {
   constructor() {
-    this.db = dbClient.doc();
+    this.db = dbClient.doc({
+      options: process.env.IS_OFFLINE ? undefined : { region: 'us-east-1' },
+    });
   }
 
   async _get({
@@ -89,7 +91,7 @@ module.exports = class GenericDao {
 
     return data.reduce((acc, i) => acc.concat(i), []);
   }
-  
+
   async _delete({ params = {} } = {}) {
     try {
       await this.db.delete(params).promise();
@@ -107,7 +109,7 @@ module.exports = class GenericDao {
       throw error(500, err.message);
     }
   }
-  
+
   _deleteAll(params = []) {
     return Promise.all(
       params.map(param => this._delete({
