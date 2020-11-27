@@ -19,6 +19,7 @@ env:
   AWS_REGION: us-east-1
   AWS_STAGE: api
   AWS_S3_BUCKET: food-giver-production-www # Previously created bucket
+  ENV_FILE: ${{ secrets.ENV_FILE }}
 
 # Os jobs são executados em paralelo, caso seja necessário um esperar o outro deve-se usar: `needs: nome_do_outro_job`
 # https://help.github.com/en/actions/automating-your-workflow-with-github-actions/workflow-syntax-for-github-actions#jobs
@@ -153,6 +154,10 @@ jobs:
           aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
+      
+      - name: Set up env file
+        run: ${{ env.ENV_FILE }} >> .env
+        working-directory: 'services/shared'
 
       - name: serverless deploy
         if: env.path != ''
