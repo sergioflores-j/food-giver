@@ -13,7 +13,6 @@ const schema = yup.object({
   createdAt: yup.string().default(() => new Date().toISOString()).required(),
   updatedAt: yup.string().default(() => new Date().toISOString()).required(),
 })
-  .strict()
   .noUnknown();
 
 module.exports = schema;

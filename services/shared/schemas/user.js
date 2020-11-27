@@ -22,7 +22,6 @@ const schema = yup.object({
   profile: yup.string().required().test('is-profile', 'profile is invalid', val => profiles.includes(val)),
   updatedAt: yup.string().default(() => new Date().toISOString()).required(),
 })
-  .strict()
   .noUnknown();
 
 module.exports = schema;
