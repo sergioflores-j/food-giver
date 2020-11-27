@@ -85,6 +85,7 @@ jobs:
         service: [
           modules/auth,
           modules/donation,
+          modules/necessity,
           modules/resources,
           modules/user,
         ]
