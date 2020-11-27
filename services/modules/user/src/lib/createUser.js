@@ -18,14 +18,14 @@ export const create = async ({ user }) => {
 
 export const run = async ({ user }) => {
   try {
-    await userSchema.validate(user, { abortEarly: false });
-
     const userItem = {
       ...user,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
       password: generateHash(user.password),
     };
+
+    await userSchema.validate(userItem, { abortEarly: false });
 
     await new UserDao().create({ user: userItem });
 

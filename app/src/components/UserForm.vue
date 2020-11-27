@@ -69,7 +69,7 @@
             required
           />
 
-          <v-alert v-if="existentUserError === this.form.email" type="warning">
+          <v-alert v-if="existentUserError === form.email" type="warning">
             Usuário já cadastrado!
           </v-alert>
 
@@ -277,7 +277,8 @@ export default {
   },
   methods: {
     submit() {
-      this.$emit('submit', { ...this.form });
+      const { passwordConfirm, ...data } = this.form;
+      this.$emit('submit', { ...data });
     },
     async submitFirstStep() {
       if (this.form.email === this.existentUserError) return;
