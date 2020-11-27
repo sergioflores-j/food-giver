@@ -31,23 +31,23 @@ functions:
           method: GET
           cors: true
 
-  # createNecessity:
-  #   handler: src/v1/create.run
-  #   events:
-  #     - http:
-  #         path: /necessity/v1/{userEmail}/donations
-  #         method: POST
-  #         cors: true
-  #         authorizer: customAuthorizer
+  createNecessity:
+    handler: src/v1/create.run
+    events:
+      - http:
+          path: /necessity/v1/{userEmail}/necessities
+          method: POST
+          cors: true
+          authorizer: customAuthorizer
 
-  # getNecessities:
-  #   handler: src/v1/list.run
-  #   events:
-  #     - http:
-  #         path: /necessity/v1/{userEmail}/donations
-  #         method: GET
-  #         cors: true
-  #         authorizer: customAuthorizer
+  getNecessities:
+    handler: src/v1/list.run
+    events:
+      - http:
+          path: /necessity/v1/{userEmail}/necessities
+          method: GET
+          cors: true
+          authorizer: customAuthorizer
 
 custom:
   serverless-offline:
