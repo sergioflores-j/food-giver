@@ -1,4 +1,3 @@
-const dbClient = require('aws-dynamodb-factory-js');
 const GenericDao = require('./GenericDao');
 const { error } = require('../utils/utils');
 const env = require('../ms.env');
@@ -6,11 +5,6 @@ const env = require('../ms.env');
 const TABLE_NAME = 'FG.Donation';
 
 module.exports = class DonationDao extends GenericDao {
-  constructor() {
-    super();
-    this.db = dbClient.doc();
-  }
-
   get({ userEmail, donationId, fields = [] } = {}) {
     return this._get({
       params: {
