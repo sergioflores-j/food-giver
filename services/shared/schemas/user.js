@@ -21,6 +21,8 @@ const schema = yup.object({
   phone: yup.string().required().test('is-phone', 'phone is invalid', val => isPhone(val)),
   profile: yup.string().required().test('is-profile', 'profile is invalid', val => profiles.includes(val)),
   updatedAt: yup.string().default(() => new Date().toISOString()).required(),
-});
+})
+  .strict()
+  .noUnknown();
 
 module.exports = schema;
