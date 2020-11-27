@@ -1,0 +1,54 @@
+service: food-giver-chat
+package:
+  exclude:
+    - node_modules/aws-sdk/**
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  region: us-east-1
+  stage: api
+  timeout: 30
+  memorySize: 128
+  tags:
+    ms: food-giver-chat
+  logRetentionInDays: 7
+  apiGateway:
+    minimumCompressionSize: 102400 # Compress response when larger than specified size in bytes (must be between 0 and 10485760)
+  iamRoleStatements:
+    ${file(../../shared/serverless-config.yml):iamRoleStatements}
+
+functions:
+  customAuthorizer:
+    # TODO: find a better way (not arn :/)
+    handler: ../auth/src/v1/authorizer.run
+
+  healthCheck:
+    handler: src/v1/health/check.run
+    events:
+      - http:
+          path: /chat/health/check
+          method: GET
+          cors: true
+
+custom:
+  serverless-offline:
+    port: ${file(../../../dev.serverless.env.json):port.chat}
+  # Deletes all previous versions of the functions except for the last 'number' after deploy
+  # Prevents the error: CodeStorageExceededException
+  prune:
+    automatic: true
+    number: 3
+  dotenv:
+    path: ../../shared/.env
+  webpack:
+    excludeFiles: 
+      - src/**/*.test.js
+      - test/**/*.test.js
+
+plugins:
+  - serverless-dotenv-plugin
+  - serverless-webpack
+  - serverless-offline
+  - serverless-prune-plugin
+
