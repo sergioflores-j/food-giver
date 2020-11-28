@@ -219,19 +219,15 @@ const calcDigitsPositionsCpf = (digits, positions = 10, sumDigits = 0) => {
   return cpf;
 };
 
-const getObjectTableData = obj => {
-  const now = new Date().toISOString();
+const sortByDate = (list, attr, order = 'asc') => {
+  const dateTime = date => new Date(date).getTime();
 
-  const created = !obj;
-
-  const updatedAt = now;
-  const createdAt = obj ? obj.createdAt : now;
-
-  return {
-    created,
-    createdAt,
-    updatedAt,
+  const orders = {
+    asc: (a, b) => dateTime(b[attr] || b) - dateTime(a[attr] || a),
+    desc: (a, b) => dateTime(a[attr] || a) - dateTime(b[attr] || b),
   };
+
+  return list.sort(orders[order]);
 };
 
 module.exports = {
@@ -258,6 +254,6 @@ module.exports = {
   isCnpjCpf,
   isCnpj,
   isCpf,
-  getObjectTableData,
   isPositiveNumber,
+  sortByDate,
 };
