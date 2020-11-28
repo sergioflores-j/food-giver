@@ -54,7 +54,7 @@
 </template>
 <script>
 import { listByUserEmail } from '@/services/chat';
-import colors from 'vuetify/lib/util/colors';
+import { getRandomColor } from '@/utils/random';
 
 export default {
   name: 'ChatListView',
@@ -69,19 +69,14 @@ export default {
   },
   computed: {
     sessionUser() {
-      return this.$store.state.auth.user;
+      return this.$store.getters['auth/user'];
     },
   },
   mounted() {
     this.getChatList();
   },
   methods: {
-    getRandomColor() {
-      const colorsKeys = Object.keys(colors);
-      const [firstKey] = colorsKeys.sort(() => 0.5 - Math.random());
-
-      return colors[firstKey].base;
-    },
+    getRandomColor,
     getEmailInitials({ participant1, participant2 } = {}) {
       return this.getOtherParticipantEmail({ participant1, participant2 }).substr(0, 1).toUpperCase();
     },

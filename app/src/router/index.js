@@ -83,6 +83,7 @@ export const routes = [
       {
         path: ':chatId',
         name: 'Chat_screen',
+        props: true,
         component: () => import(/* webpackChunkName: "chat" */ '../views/Chat/ChatRoom.vue'),
       },
     ],
