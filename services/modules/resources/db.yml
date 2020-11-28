@@ -62,10 +62,47 @@ Resources:
       AttributeDefinitions:
         - AttributeName: chatId
           AttributeType: S
+        - AttributeName: participant1
+          AttributeType: S
+        - AttributeName: participant2
+          AttributeType: S
+        - AttributeName: connectionId1
+          AttributeType: S
+        - AttributeName: connectionId2
+          AttributeType: S
       KeySchema:
         - AttributeName: chatId
           KeyType: HASH
       BillingMode: PAY_PER_REQUEST
+      GlobalSecondaryIndexes:
+        - IndexName: participant1_index
+          KeySchema:
+          - AttributeName: participant1
+            KeyType: HASH
+          - AttributeName: participant2
+            KeyType: RANGE
+          Projection:
+            ProjectionType: ALL
+        - IndexName: participant2_index
+          KeySchema:
+          - AttributeName: participant2
+            KeyType: HASH
+          - AttributeName: participant1
+            KeyType: RANGE
+          Projection:
+            ProjectionType: ALL
+        - IndexName: connectionId1_index
+          KeySchema:
+          - AttributeName: connectionId1
+            KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+        - IndexName: connectionId2_index
+          KeySchema:
+          - AttributeName: connectionId2
+            KeyType: HASH
+          Projection:
+            ProjectionType: ALL
 
   tableFGChatMessage:
     Type: 'AWS::DynamoDB::Table'

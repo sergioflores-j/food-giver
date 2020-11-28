@@ -27,9 +27,9 @@
       <template v-for="(item, i) in actions">
         <v-list-item
           v-if="checkAccess(item)"
+          :key="i"
           :to="item.action"
           active-class="primary--text"
-          :key="i"
         >
           <v-list-item-icon>
             <v-icon v-text="item.icon" />
@@ -49,54 +49,34 @@ export default {
   name: 'Sidebar',
   data() {
     return {
+      // TODO: pegar a partir das routes definidas no router, colocar todas as infos no meta :D
       actions: [
         {
           text: 'Doações',
-          icon: 'mdi-handshake',
+          icon: 'mdi-food-drumstick',
           action: '/donations',
           profile: 'giver',
         },
         {
           text: 'Necessidades',
-          icon: 'mdi-account-multiple',
+          icon: 'mdi-food-drumstick-outline',
           action: '',
           profile: '',
         },
         {
-          text: 'Starred',
-          icon: 'mdi-star',
-          action: '',
-          profile: '',
+          text: 'Chats',
+          icon: 'mdi-chat',
+          action: '/chats',
+          profile: 'all',
         },
         {
-          text: 'Recent',
-          icon: 'mdi-history',
-          action: '',
-          profile: '',
-        },
-        {
-          text: 'Offline',
-          icon: 'mdi-check-circle',
-          action: '',
-          profile: '',
-        },
-        {
-          text: 'Uploads',
-          icon: 'mdi-upload',
-          action: '',
-          profile: '',
-        },
-        {
-          text: 'Backups',
-          icon: 'mdi-cloud-upload',
-          action: '',
+          text: 'Seleção de Doação',
+          icon: 'mdi-cursor-default-click',
+          action: '/select-donation',
           profile: '',
         },
       ],
     };
-  },
-  mounted() {
-    this.$store.dispatch('user/getUser', { email: this.$store.state.auth.user.email });
   },
   computed: {
     user() {
@@ -113,6 +93,9 @@ export default {
         nameSplit.length > 1 && nameSplit[nameSplit.length - 1].substr(0, 1)
       }`;
     },
+  },
+  mounted() {
+    this.$store.dispatch('user/getUser', { email: this.$store.state.auth.user.email });
   },
   methods: {
     checkAccess({ profile }) {
