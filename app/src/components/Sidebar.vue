@@ -60,7 +60,7 @@ export default {
         {
           text: 'Necessidades',
           icon: 'mdi-food-drumstick-outline',
-          action: '',
+          action: '/necessities',
           profile: 'beneficiary',
         },
         {
