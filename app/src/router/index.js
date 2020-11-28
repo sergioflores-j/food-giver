@@ -70,7 +70,7 @@ export const routes = [
     component: () => import(/* webpackChunkName: "select_donation" */ '../views/SelectDonation.vue'),
   },
   {
-    path: '/chat',
+    path: '/chats',
     meta: {
       requiresAuth: true,
     },
