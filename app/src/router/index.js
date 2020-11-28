@@ -5,7 +5,7 @@ import store from '../store/index';
 
 Vue.use(VueRouter);
 
-const routes = [
+export const routes = [
   {
     path: '*',
     redirect: '/',
@@ -60,6 +60,33 @@ const routes = [
       },
     ],
     component: () => import(/* webpackChunkName: "donation" */ '../views/Donation/Donation.vue'),
+  },
+  {
+    path: '/select-donation',
+    name: 'SelectDonation',
+    meta: {
+      requiresAuth: true,
+    },
+    component: () => import(/* webpackChunkName: "select_donation" */ '../views/SelectDonation.vue'),
+  },
+  {
+    path: '/chat',
+    meta: {
+      requiresAuth: true,
+    },
+    children: [
+      {
+        path: '',
+        name: 'Chat_list',
+        component: () => import(/* webpackChunkName: "chat" */ '../views/Chat/ChatList.vue'),
+      },
+      {
+        path: ':chatId',
+        name: 'Chat_screen',
+        component: () => import(/* webpackChunkName: "chat" */ '../views/Chat/ChatRoom.vue'),
+      },
+    ],
+    component: () => import(/* webpackChunkName: "chat" */ '../views/Chat/Chat.vue'),
   },
 ];
 
