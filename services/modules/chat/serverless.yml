@@ -15,8 +15,21 @@ provider:
   logRetentionInDays: 7
   apiGateway:
     minimumCompressionSize: 102400 # Compress response when larger than specified size in bytes (must be between 0 and 10485760)
+  # TODO: verificar
   iamRoleStatements:
-    ${file(../../shared/serverless-config.yml):iamRoleStatements}
+    - ${file(../../shared/serverless-config.yml):iamRoleStatements}
+    - Effect: Allow
+      Action:
+        - 'execute-api:ManageConnections'
+      Resource:
+        - 'arn:aws:execute-api:${opt:region, self:provider.region}:*:**/@connections/*'
+  # API GW Websocket specific configuration
+  websocketsApiName: ${self:service}-apigw-websocket-${opt:stage, self:provider.stage}
+  # Custom routes are selected by the value of the action property in the body
+  websocketsApiRouteSelectionExpression: $request.body.action
+  environment:
+    LOCAL_WEBSOCKET_API_ENDPOINT: 'http://localhost:${file(../../../dev.serverless.env.json):port.chat_ws}'
+    WEBSOCKET_API_ENDPOINT: !Join ['', ['https://', !Ref WebsocketsApi, '.execute-api.', '${opt:region, self:provider.region}', '.amazonaws.com/', '${opt:stage, self:provider.stage}/']]
 
 functions:
   customAuthorizer:
@@ -30,10 +43,37 @@ functions:
           path: /chat/health/check
           method: GET
           cors: true
+  
+  # Lambda Authorizers
+  # authWebsocket:
+  #   handler: src/v1/authWebsocket.run
+
+  # WEBSOCKET
+  wsConnectionHandler:
+    handler: src/v1/ws/connectionHandler.run
+    events:
+      - websocket:
+          # Handles new connection requests
+          route: $connect
+          # Authorizers and wss:// are currently not supported.
+          # Reference: https://github.com/dherault/serverless-offline/tree/v5.12.1#websocket
+
+          # authorizer:
+          #   name: authWebsocket
+      - websocket:
+          # Handles disconnect messages
+          route: $disconnect
+  wsHealthCheck:
+    handler: src/v1/ws/health.run
+    events:
+      - websocket:
+          # Handles all unrouted messages
+          route: $default
 
 custom:
   serverless-offline:
     port: ${file(../../../dev.serverless.env.json):port.chat}
+    websocketPort: ${file(../../../dev.serverless.env.json):port.chat_ws}
   # Deletes all previous versions of the functions except for the last 'number' after deploy
   # Prevents the error: CodeStorageExceededException
   prune:
