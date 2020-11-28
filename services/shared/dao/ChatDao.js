@@ -4,6 +4,7 @@ const env = require('../ms.env');
 
 const TABLE_NAME = 'FG.Chat';
 const PARTICIPANT1_INDEX_NAME = 'participant1_index';
+const PARTICIPANT2_INDEX_NAME = 'participant2_index';
 const CONNECTIONID1_INDEX_NAME = 'connectionId1_index';
 const CONNECTIONID2_INDEX_NAME = 'connectionId2_index';
 
@@ -18,6 +19,35 @@ module.exports = class ChatDao extends GenericDao {
       },
       fields,
     });
+  }
+
+  async list({ userEmail, fields = [] } = {}) {
+    const res = await Promise.all([
+      this._query({
+        params: {
+          TableName: TABLE_NAME,
+          IndexName: PARTICIPANT1_INDEX_NAME,
+          KeyConditionExpression: 'participant1 = :participant1',
+          ExpressionAttributeValues: {
+            ':participant1': userEmail,
+          },
+        },
+        fields,
+      }),
+      this._query({
+        params: {
+          TableName: TABLE_NAME,
+          IndexName: PARTICIPANT2_INDEX_NAME,
+          KeyConditionExpression: 'participant2 = :participant2',
+          ExpressionAttributeValues: {
+            ':participant2': userEmail,
+          },
+        },
+        fields,
+      }),
+    ]);
+
+    return res.flat();
   }
 
   async query({ participant1, participant2, fields = [] } = {}) {

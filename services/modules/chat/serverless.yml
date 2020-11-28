@@ -43,6 +43,15 @@ functions:
           path: /chat/health/check
           method: GET
           cors: true
+
+  getChats:
+    handler: src/v1/list.run
+    events:
+      - http:
+          path: /chat/v1/{userEmail}/chats
+          method: GET
+          cors: true
+          authorizer: customAuthorizer
   
   # Lambda Authorizers
   # authWebsocket:

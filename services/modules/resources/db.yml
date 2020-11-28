@@ -83,6 +83,14 @@ Resources:
             KeyType: RANGE
           Projection:
             ProjectionType: ALL
+        - IndexName: participant2_index
+          KeySchema:
+          - AttributeName: participant2
+            KeyType: HASH
+          - AttributeName: participant1
+            KeyType: RANGE
+          Projection:
+            ProjectionType: ALL
         - IndexName: connectionId1_index
           KeySchema:
           - AttributeName: connectionId1
