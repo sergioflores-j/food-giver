@@ -52,6 +52,14 @@ functions:
           method: GET
           cors: true
           authorizer: customAuthorizer
+  getChat:
+    handler: src/v1/get.run
+    events:
+      - http:
+          path: /chat/v1/chats/{chatId}
+          method: GET
+          cors: true
+          authorizer: customAuthorizer
   
   # Lambda Authorizers
   # authWebsocket:
