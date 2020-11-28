@@ -48,8 +48,16 @@ functions:
     handler: src/v1/list.run
     events:
       - http:
-          path: /chat/v1/{userEmail}/chats
+          path: /chat/v1/users/{userEmail}/chats
           method: GET
+          cors: true
+          authorizer: customAuthorizer
+  createChat:
+    handler: src/v1/create.run
+    events:
+      - http:
+          path: /chat/v1/chats
+          method: POST
           cors: true
           authorizer: customAuthorizer
   getChat:

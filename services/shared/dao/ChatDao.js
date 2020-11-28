@@ -222,7 +222,7 @@ module.exports = class ChatDao extends GenericDao {
   }
 
   async updateControlFields({ chatId }) {
-    return this._update({
+    const { Attributes } = await this._update({
       params: {
         TableName: TABLE_NAME,
         Key: {
@@ -236,7 +236,10 @@ module.exports = class ChatDao extends GenericDao {
           '#updatedAt': 'updatedAt',
         },
         ConditionExpression: 'attribute_exists(chatId)',
+        ReturnValues: 'UPDATED_NEW',
       },
     });
+
+    return Attributes;
   }
 };

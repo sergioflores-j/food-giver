@@ -12,9 +12,8 @@ export const createOrUpdateChat = async ({
     });
 
     if (existentChat) {
-      await new ChatDao().updateControlFields({ chatId: existentChat.chatId });
-
-      return existentChat;
+      const updated = await new ChatDao().updateControlFields({ chatId: existentChat.chatId });
+      return { ...existentChat, ...updated };
     }
 
     const newChat = await createChat({ participant1, participant2 });
