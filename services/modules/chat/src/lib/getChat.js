@@ -7,6 +7,7 @@ import ChatDao from '@shared/dao/ChatDao';
 /**
  * @param {object} param0
  * @param {string} param0.chatId
+ * @returns {Promise<import('../../../../../types/Chat').Chat>}
  */
 export const get = async ({ chatId }) => {
   checkParameters({ chatId });
@@ -16,9 +17,7 @@ export const get = async ({ chatId }) => {
 
 export const run = async ({ chatId }) => {
   try {
-    const chat = await new ChatDao().get({
-      chatId,
-    });
+    const chat = await new ChatDao().get({ chatId });
 
     return chat;
   } catch (err) {

@@ -104,7 +104,7 @@ module.exports = class GenericDao {
 
   async _update({ params = {} } = {}) {
     try {
-      await this.db.update(params).promise();
+      return await this.db.update(params).promise();
     } catch (err) {
       throw error(500, err.message);
     }
