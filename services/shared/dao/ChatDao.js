@@ -9,6 +9,9 @@ const CONNECTIONID1_INDEX_NAME = 'connectionId1_index';
 const CONNECTIONID2_INDEX_NAME = 'connectionId2_index';
 
 module.exports = class ChatDao extends GenericDao {
+  /**
+   * @returns {import('../../../types/Chat').Chat} chat
+   */
   get({ chatId, fields = [] } = {}) {
     return this._get({
       params: {
@@ -125,6 +128,10 @@ module.exports = class ChatDao extends GenericDao {
     });
   }
 
+  /**
+   * @param {object} param0
+   * @param {import('../../../types/Chat').Chat} param0.chat
+   */
   async create({ chat = {} } = {}) {
     try {
       await this._put({
@@ -143,6 +150,10 @@ module.exports = class ChatDao extends GenericDao {
     return chat;
   }
 
+  /**
+   * @param {object} param0
+   * @param {import('../../../types/Chat').Chat} param0.chat
+   */
   async put({ chat } = {}) {
     await this._put({
       params: {
