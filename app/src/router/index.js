@@ -120,20 +120,27 @@ router.beforeEach(async (to, from, next) => {
   const isLoggedIn = store.getters['auth/isLoggedIn'];
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
   const noAuth = to.matched.some(record => record.meta.noAuth);
+  const continueToPath = () => {
+    if (from.path === '/login' && to.query.redirect_url) next(to.query.redirect_url);
+    next();
+  };
 
   if (noAuth && isLoggedIn)
     await store.dispatch('auth/logout');
 
   if (requiresAuth) {
     if (isLoggedIn) {
-      next();
+      continueToPath();
       return;
     }
 
-    next('/login');
+    next({
+      path: '/login',
+      query: { redirect_url: !['/', '/login'].includes(to.path) ? to.path : undefined },
+    });
   }
 
-  next();
+  continueToPath();
 });
 
 export default router;
