@@ -13,7 +13,7 @@
           <v-avatar :color="chatColor">
             {{ emailInitials }}
           </v-avatar>
-          <div style="margin: 5px;">
+          <div class="ellipsis" style="margin: 5px;">
             {{ otherParticipantEmail }}
             <transition name="fade-transition">
               <div v-if="isOtherParticipantOnline" class="online-badge">
