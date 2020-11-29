@@ -8,20 +8,32 @@
         />
       </v-overlay>
 
-      <div
-        v-for="message of messages"
-        :key="message.messageId"
-        class="message"
-        :class="{ own: message.from === userEmail }"
-      >
-        <div class="content" style="margin-top: 5px">
-          <!-- TODO: sanitize message content -->
-          <div v-html="message.message" />
-          <div class="date">
-            {{ formatDateTime(message.createdAt) }}
+      <transition-group tag="div" name="fade-transition">
+        <template
+          v-for="(message, index) of messages"
+        >
+          <div
+            :key="index"
+            class="message"
+            :class="{ own: message.from === userEmail, loading: !message.messageId }"
+          >
+            <div class="content" style="margin-top: 5px">
+              <!-- TODO: sanitize message content -->
+              <div v-html="message.message" />
+              <div v-if="message.createdAt" class="date">
+                {{ formatDateTime(message.createdAt) }}
+              </div>
+              <div v-if="!message.messageId" class="loading">
+                <v-progress-circular
+                  indeterminate
+                  size="12"
+                />
+                Enviando...
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
+        </template>
+      </transition-group>
     </div>
 
     <div class="new-message-container">
@@ -75,12 +87,24 @@ export default {
       return this.sessionUser.email;
     },
   },
+  watch: {
+    messages() {
+      this.scrollToEnd();
+    },
+  },
   methods: {
     formatDateTime,
     sendMessage() {
+      if (!this.newMessage) return;
       this.$emit('new-message', this.newMessage);
 
       this.newMessage = '';
+    },
+    scrollToEnd() {
+      this.$nextTick(() => {
+        const container = this.$refs.chatContainer;
+        container.scrollTop = container.scrollHeight;
+      });
     },
   },
 };
@@ -95,7 +119,8 @@ export default {
 
   .chat-container {
     box-sizing: border-box;
-    height: calc(100vh - 300px);
+    min-height: 50vh;
+    max-height: calc(100vh - 320px);
     overflow-y: auto;
     padding: 10px;
     background-color: #f2f2f2;
@@ -103,6 +128,13 @@ export default {
 
     .message {
       margin-bottom: 3px;
+      &.loading {
+        color: #a3a3a3;
+        .content {
+          background-color: #4b4b4b !important;
+        }
+      }
+
       &.own {
         text-align: right;
         .content {
@@ -111,6 +143,11 @@ export default {
         }
       }
       .date {
+        font-size: 60%;
+        text-align: right;
+        margin-top: 5px;
+      }
+      .loading {
         font-size: 60%;
         text-align: right;
         margin-top: 5px;

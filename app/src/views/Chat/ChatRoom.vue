@@ -156,11 +156,26 @@ export default {
     },
     newMessage(message) {
       this.send({ route: 'newMessage', data: { message } });
+      this.messages.push({ message, from: this.sessionUser.email });
     },
     socketEventHandler(event, result) {
       switch (event) {
         case 'newMessage':
-          this.messages.push(result);
+          // eslint-disable-next-line no-case-declarations
+          const index = this.messages.findIndex(m => (
+            !m.messageId
+            && result.message === m.message
+            && m.from === this.sessionUser.email
+          ));
+
+          console.log('index', index);
+
+          // Message sent by the user
+          if (index !== -1)
+            this.messages.splice(index, 1, result);
+          // Message received from the other user
+          else this.messages.push(result);
+
           break;
         case 'connected':
           this.$set(this.chat.activeSocket, this.otherParticipantEmail, { connectionId: result.connectionId });
@@ -249,7 +264,7 @@ export default {
   white-space: nowrap;
 }
 .chat-room-container {
-  min-height: calc(100vh - 140px);
+  min-height: calc(100vh - 400px);
 }
 .chat-participant-container {
   display: flex;
