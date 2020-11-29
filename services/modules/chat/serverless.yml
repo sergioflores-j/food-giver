@@ -17,12 +17,8 @@ provider:
     minimumCompressionSize: 102400 # Compress response when larger than specified size in bytes (must be between 0 and 10485760)
   # TODO: verificar
   iamRoleStatements:
-    - ${file(../../shared/serverless-config.yml):iamRoleStatements}
-    - Effect: Allow
-      Action:
-        - 'execute-api:ManageConnections'
-      Resource:
-        - 'arn:aws:execute-api:${opt:region, self:provider.region}:*:**/@connections/*'
+    ${file(../../shared/serverless-config.yml):iamRoleStatements}
+
   # API GW Websocket specific configuration
   websocketsApiName: ${self:service}-apigw-websocket-${opt:stage, self:provider.stage}
   # Custom routes are selected by the value of the action property in the body
