@@ -36,7 +36,12 @@
         @keyup.enter="sendMessage"
       >
         <template #append-outer>
-          <v-btn :color="newMessage && 'primary'" icon :disabled="isLoading || !newMessage" @click="sendMessage">
+          <v-btn
+            :color="newMessage && 'primary'"
+            icon
+            :disabled="isLoading || !newMessage"
+            @click="sendMessage"
+          >
             <v-icon>mdi-send</v-icon>
           </v-btn>
         </template>
@@ -73,8 +78,8 @@ export default {
   methods: {
     formatDateTime,
     sendMessage() {
-      // TODO:
-      console.log('sendMessage', this.newMessage);
+      this.$emit('new-message', this.newMessage);
+
       this.newMessage = '';
     },
   },

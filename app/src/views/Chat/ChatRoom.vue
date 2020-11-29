@@ -27,7 +27,12 @@
 
     <v-row v-if="!loading.chat">
       <v-col style="padding-top: 0; padding-bottom: 0;">
-        <Chat :chat="chat" :messages="messages" :is-loading="loading.messages" />
+        <Chat
+          :chat="chat"
+          :messages="messages"
+          :is-loading="loading.messages"
+          @new-message="newMessage"
+        />
       </v-col>
     </v-row>
 
@@ -149,12 +154,16 @@ export default {
         this.loading.messages = false;
       }
     },
+    newMessage(message) {
+      this.send({ route: 'newMessage', data: { message } });
+    },
     socketEventHandler(event, result) {
       switch (event) {
         case 'newMessage':
+          this.messages.push(result);
           break;
         case 'connected':
-          this.$set(this.chat.activeSocket, this.otherParticipantEmail, {});
+          this.$set(this.chat.activeSocket, this.otherParticipantEmail, { connectionId: result.connectionId });
           break;
         case 'disconnected':
           this.$delete(this.chat.activeSocket, this.otherParticipantEmail);
