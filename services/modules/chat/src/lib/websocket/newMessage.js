@@ -5,6 +5,7 @@ import ChatDao from '@shared/dao/ChatDao';
 import { findByConnectionId, findByEmail } from '@/lib/utils/findActiveParticipant';
 import { create as createMessage } from '@/lib/createMessage';
 import sendMessage from '@/lib/utils/sendMessage';
+import { getOtherParticipantEmail } from '@/lib/utils/chatParticipant';
 
 /**
  * @param {object} param0
@@ -48,7 +49,10 @@ export const run = async ({
       chatId: chat.chatId,
       from: userEmail,
       message,
-      to: otherParticipant.userEmail,
+      // ? If the other participant is currently active get it's email, otherwise find in the chat object
+      to: otherParticipant
+        ? otherParticipant.userEmail
+        : getOtherParticipantEmail({ chat, userEmail }),
     });
 
     const notificationBody = {
