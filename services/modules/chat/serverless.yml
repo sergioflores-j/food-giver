@@ -30,7 +30,7 @@ provider:
 functions:
   customAuthorizer:
     # TODO: find a better way (not arn :/)
-    handler: ../auth/src/v1/authorizer.run
+    handler: src/v1/authorizer.run
 
   healthCheck:
     handler: src/v1/health/check.run

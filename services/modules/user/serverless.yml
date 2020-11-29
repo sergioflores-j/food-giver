@@ -21,7 +21,7 @@ provider:
 functions:
   customAuthorizer:
     # TODO: find a better way (not arn :/)
-    handler: ../auth/src/v1/authorizer.run
+    handler: src/v1/authorizer.run
     memorySize: 128
   healthCheck:
     handler: src/v1/health/check.run
@@ -59,6 +59,7 @@ functions:
 
 custom:
   serverless-offline:
+    useChildProcesses: false
     lambdaPort: null
     httpPort: ${file(../../../dev.serverless.env.json):port.user}
   # Deletes all previous versions of the functions except for the last 'number' after deploy

@@ -24,7 +24,7 @@ axios.interceptors.response.use(
   error => {
     console.log('error', error);
     const status = error.response?.status || error.status;
-    if (status === 403) router.push('/login');
+    if (status === 403 || status === 401) router.push('/login');
     // TODO: Maybe we can make a global toast with the error here...
     throw error;
   },
