@@ -4,6 +4,7 @@ import env from '@root/ms.env';
 
 import ChatDao from '@shared/dao/ChatDao';
 import sendMessage from '@/lib/utils/sendMessage';
+import { findByConnectionId, findByEmail } from '../utils/findActiveParticipant';
 
 /**
  * @param {object} param0
@@ -91,6 +92,7 @@ const notifyParticipant = async ({
     participant: otherParticipant.userEmail,
     event,
     message: `The user has ${event}.`,
+    messageData: { connectionId: otherParticipant.connectionId },
   });
 };
 
@@ -98,14 +100,10 @@ const disconnect = async ({ connectionId }) => {
   console.log('disconnecting:', connectionId);
 
   const [chat] = await new ChatDao().queryByConnectionId({ connectionId });
-  const activeSocketKeys = Object.keys(chat.activeSocket);
-
-  console.log('activeSocketKeys', activeSocketKeys);
-
-  // ? Find the participant who has this connectionId
-  const participant = activeSocketKeys.find(k => chat.activeSocket[k].connectionId === connectionId);
-  // ? Find the participant who doesn't has this connectionId
-  const otherParticipant = activeSocketKeys.find(k => chat.activeSocket[k].connectionId !== connectionId);
+  const { participant, otherParticipant } = findByConnectionId({
+    connectionId,
+    activeSocket: chat.activeSocket,
+  });
 
   // ? Set the participant as inactive (remove it's connection from the chat object)
   await new ChatDao().updateActiveParticipant({
@@ -142,21 +140,16 @@ const connect = async ({
     connectedAt,
   });
 
-  const otherParticipant = Object.keys(chat.activeSocket)
-    .find(k => k !== userEmail);
+  const { otherParticipant } = findByEmail({
+    userEmail,
+    activeSocket: chat.activeSocket,
+  });
 
   console.log('connected successfully');
 
   return {
     chat,
-    otherParticipant: (
-      otherParticipant && chat.activeSocket[otherParticipant]
-        ? {
-          ...chat.activeSocket[otherParticipant],
-          userEmail: otherParticipant,
-        }
-        : undefined
-    ),
+    otherParticipant,
   };
 };
 
