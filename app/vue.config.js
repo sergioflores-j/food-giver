@@ -16,4 +16,10 @@ module.exports = {
       title: 'Food Giver',
     },
   },
+  pwa: {
+    name: 'Food Giver',
+    themeColor: '#33691e',
+    msTileColor: '#EEEEEE',
+    appleMobileWebAppCapable: 'yes',
+  },
 };

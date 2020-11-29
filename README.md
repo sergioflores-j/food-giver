@@ -5,7 +5,7 @@
 |[![Deploy de Produção](https://github.com/sergioflores-j/food-giver/workflows/deploy/badge.svg?branch=master&label=Production)](https://github.com/sergioflores-j/food-giver/actions?query=branch%3Amaster)|TODO
 
 
-![image](./app/src/assets/logo.jpeg)
+![image](./app/src/assets/logo.png)
 
 [Acessar a aplicação](https://d6x206yew963j.cloudfront.net)
 
