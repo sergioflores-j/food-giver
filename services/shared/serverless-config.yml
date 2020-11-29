@@ -11,3 +11,8 @@ iamRoleStatements:
     Resource:
       - arn:aws:dynamodb:*:*:table/FG.*
       - arn:aws:dynamodb:*:*:table/FG.*/index/*
+  - Effect: Allow
+    Action:
+      - 'execute-api:ManageConnections'
+    Resource:
+      - 'arn:aws:execute-api:*:*:**/@connections/*'

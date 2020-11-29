@@ -85,6 +85,7 @@ jobs:
       matrix:
         service: [
           modules/auth,
+          modules/chat,
           modules/donation,
           modules/necessity,
           modules/resources,

@@ -1,0 +1,128 @@
+service: food-giver-chat
+package:
+  exclude:
+    - node_modules/aws-sdk/**
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  region: us-east-1
+  stage: api
+  timeout: 30
+  memorySize: 128
+  tags:
+    ms: food-giver-chat
+  logRetentionInDays: 7
+  apiGateway:
+    minimumCompressionSize: 102400 # Compress response when larger than specified size in bytes (must be between 0 and 10485760)
+  # TODO: verificar
+  iamRoleStatements:
+    ${file(../../shared/serverless-config.yml):iamRoleStatements}
+
+  # API GW Websocket specific configuration
+  websocketsApiName: ${self:service}-apigw-websocket-${opt:stage, self:provider.stage}
+  # Custom routes are selected by the value of the action property in the body
+  websocketsApiRouteSelectionExpression: $request.body.action
+  environment:
+    LOCAL_WEBSOCKET_API_ENDPOINT: 'http://localhost:${file(../../../dev.serverless.env.json):port.chat_ws}'
+    WEBSOCKET_API_ENDPOINT: !Join ['', ['https://', !Ref WebsocketsApi, '.execute-api.', '${opt:region, self:provider.region}', '.amazonaws.com/', '${opt:stage, self:provider.stage}/']]
+
+functions:
+  customAuthorizer:
+    # TODO: find a better way (not arn :/)
+    handler: ../auth/src/v1/authorizer.run
+
+  healthCheck:
+    handler: src/v1/health/check.run
+    events:
+      - http:
+          path: /chat/health/check
+          method: GET
+          cors: true
+
+  getChats:
+    handler: src/v1/list.run
+    events:
+      - http:
+          path: /chat/v1/users/{userEmail}/chats
+          method: GET
+          cors: true
+          authorizer: customAuthorizer
+  createChat:
+    handler: src/v1/create.run
+    events:
+      - http:
+          path: /chat/v1/chats
+          method: POST
+          cors: true
+          authorizer: customAuthorizer
+  getChat:
+    handler: src/v1/get.run
+    events:
+      - http:
+          path: /chat/v1/chats/{chatId}
+          method: GET
+          cors: true
+          authorizer: customAuthorizer
+  getChatMessages:
+    handler: src/v1/listMessages.run
+    events:
+      - http:
+          path: /chat/v1/chats/{chatId}/messages
+          method: GET
+          cors: true
+          authorizer: customAuthorizer
+  
+  # Lambda Authorizers
+  # authWebsocket:
+  #   handler: src/v1/authWebsocket.run
+
+  # WEBSOCKET
+  wsConnectionHandler:
+    handler: src/v1/ws/connectionHandler.run
+    events:
+      - websocket:
+          # Handles new connection requests
+          route: $connect
+          # Authorizers and wss:// are currently not supported.
+          # Reference: https://github.com/dherault/serverless-offline/tree/v5.12.1#websocket
+
+          # authorizer:
+          #   name: authWebsocket
+      - websocket:
+          # Handles disconnect messages
+          route: $disconnect
+  wsHealthCheck:
+    handler: src/v1/ws/health.run
+    events:
+      - websocket:
+          # Handles all unrouted messages
+          route: $default
+  wsNewMessage:
+    handler: src/v1/ws/newMessage.run
+    events:
+      - websocket:
+          route: newMessage
+
+custom:
+  serverless-offline:
+    port: ${file(../../../dev.serverless.env.json):port.chat}
+    websocketPort: ${file(../../../dev.serverless.env.json):port.chat_ws}
+  # Deletes all previous versions of the functions except for the last 'number' after deploy
+  # Prevents the error: CodeStorageExceededException
+  prune:
+    automatic: true
+    number: 3
+  dotenv:
+    path: ../../shared/.env
+  webpack:
+    excludeFiles: 
+      - src/**/*.test.js
+      - test/**/*.test.js
+
+plugins:
+  - serverless-dotenv-plugin
+  - serverless-webpack
+  - serverless-offline
+  - serverless-prune-plugin
+

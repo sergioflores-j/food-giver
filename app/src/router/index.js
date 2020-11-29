@@ -5,7 +5,7 @@ import store from '../store/index';
 
 Vue.use(VueRouter);
 
-const routes = [
+export const routes = [
   {
     path: '*',
     redirect: '/',
@@ -60,6 +60,53 @@ const routes = [
       },
     ],
     component: () => import(/* webpackChunkName: "donation" */ '../views/Donation/Donation.vue'),
+  },
+  {
+    path: '/select-donation',
+    name: 'SelectDonation',
+    meta: {
+      requiresAuth: true,
+    },
+    component: () => import(/* webpackChunkName: "select_donation" */ '../views/SelectDonation.vue'),
+  },
+  {
+    path: '/necessities',
+    meta: {
+      requiresAuth: true,
+    },
+    children: [
+      {
+        path: '',
+        name: 'Necessities_list',
+        component: () => import(/* webpackChunkName: "necessity" */ '../views/Necessity/NecessityList.vue'),
+      },
+      {
+        path: 'new',
+        name: 'Necessities_New',
+        component: () => import(/* webpackChunkName: "necessity" */ '../views/Necessity/NewNecessity.vue'),
+      },
+    ],
+    component: () => import(/* webpackChunkName: "necessity" */ '../views/Necessity/Necessity.vue'),
+  },
+  {
+    path: '/chats',
+    meta: {
+      requiresAuth: true,
+    },
+    children: [
+      {
+        path: '',
+        name: 'Chat_list',
+        component: () => import(/* webpackChunkName: "chat" */ '../views/Chat/ChatList.vue'),
+      },
+      {
+        path: ':chatId',
+        name: 'Chat_screen',
+        props: true,
+        component: () => import(/* webpackChunkName: "chat" */ '../views/Chat/ChatRoom.vue'),
+      },
+    ],
+    component: () => import(/* webpackChunkName: "chat" */ '../views/Chat/Chat.vue'),
   },
 ];
 
