@@ -157,8 +157,11 @@ jobs:
           aws-region: ${{ env.AWS_REGION }}
       
       - name: Set up env file
-        run: ${{ env.ENV_FILE }} >> .env
-        working-directory: 'services/shared'
+        run: |
+          ls
+          echo "${{ env.ENV_FILE }}" > .env
+          cat .env
+        working-directory: ${{ format('{0}/{1}', env.root_path, 'shared') }}
 
       - name: serverless deploy
         if: env.path != ''
