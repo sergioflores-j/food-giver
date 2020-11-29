@@ -102,6 +102,11 @@ functions:
       - websocket:
           # Handles all unrouted messages
           route: $default
+  wsNewMessage:
+    handler: src/v1/ws/newMessage.run
+    events:
+      - websocket:
+          route: newMessage
 
 custom:
   serverless-offline:
