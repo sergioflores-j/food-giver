@@ -18,7 +18,7 @@ export const run = async ({ chatId }) => {
   try {
     const messages = await new ChatMessageDao().queryByChatId({ chatId });
 
-    return { messages: sortByDate(messages, 'createdAt', 'asc') };
+    return { messages: sortByDate(messages, 'createdAt', 'desc') };
   } catch (err) {
     console.log('Error ListChatMessages Run', err);
     console.log('Params: ', {

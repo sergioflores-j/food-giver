@@ -1,14 +1,11 @@
 <template>
   <v-card
-    class="mx-auto"
-    max-width="500"
+    class="mx-auto chat-room-container"
+    max-width="700"
     :loading="loading.chat"
   >
-    <v-card-title>
-      Chat
-    </v-card-title>
     <v-row>
-      <v-col align-self="center" class="mx-5 ellipsis" :title="otherParticipantEmail">
+      <v-col align-self="center" class="mx-5 ellipsis chat-participant-container" :title="otherParticipantEmail">
         <template v-if="loading.chat">
           Entrando...
         </template>
@@ -16,8 +13,21 @@
           <v-avatar :color="chatColor">
             {{ emailInitials }}
           </v-avatar>
-          {{ otherParticipantEmail }}
+          <div style="margin: 5px;">
+            {{ otherParticipantEmail }}
+            <transition name="fade-transition">
+              <div v-if="isOtherParticipantOnline" class="online-badge">
+                Online
+              </div>
+            </transition>
+          </div>
         </template>
+      </v-col>
+    </v-row>
+
+    <v-row v-if="!loading.chat">
+      <v-col style="padding-top: 0; padding-bottom: 0;">
+        <Chat :chat="chat" :messages="messages" :is-loading="loading.messages" />
       </v-col>
     </v-row>
 
@@ -43,16 +53,20 @@
 
 <script>
 import qs from 'querystring';
-import { get } from '@/services/chat';
+import { get, getMessages } from '@/services/chat';
+import Chat from '@/components/Chat.vue';
 
 export default {
   name: 'ChatView',
+  components: {
+    Chat,
+  },
   props: {
     chatId: { type: String, default: '' },
   },
   data() {
     return {
-      chat: '',
+      chat: undefined,
       messages: [],
       websocket: {
         websocket: undefined,
@@ -61,6 +75,7 @@ export default {
       eventType: 'test',
       loading: {
         chat: false,
+        messages: false,
       },
       connectionChecker: '',
       showErrorSnackbar: false,
@@ -85,16 +100,21 @@ export default {
         userEmail: this.sessionUser.email,
       });
     },
-    chatColor() {
-      if (!this.chat || !this.chat.activeSocket) return 'grey';
+    isOtherParticipantOnline() {
+      if (!this.chat || !this.chat.activeSocket) return false;
+      if (this.chat.activeSocket[this.otherParticipantEmail]) return true;
 
-      return this.chat.activeSocket[this.otherParticipantEmail] ? 'green' : 'grey';
+      return false;
+    },
+    chatColor() {
+      return this.isOtherParticipantOnline ? 'green' : 'grey';
     },
   },
   async mounted() {
     console.log('chatId :>> ', this.chatId);
     await this.getChatInfo();
     await this.connect();
+    this.loadMessages();
   },
   beforeDestroy() {
     this.websocket.isDestroying = true;
@@ -114,6 +134,19 @@ export default {
         this.showErrorSnackbar = true;
       } finally {
         this.loading.chat = false;
+      }
+    },
+    async loadMessages() {
+      if (this.loading.messages) return;
+
+      this.loading.messages = true;
+      try {
+        const { messages } = await getMessages(this.chatId);
+        this.messages = messages;
+      } catch (err) {
+        this.showErrorSnackbar = true;
+      } finally {
+        this.loading.messages = false;
       }
     },
     socketEventHandler(event, result) {
@@ -205,5 +238,18 @@ export default {
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
+}
+.chat-room-container {
+  min-height: calc(100vh - 140px);
+}
+.chat-participant-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+
+  .online-badge {
+    font-size: 70%;
+    color: #636363;
+  }
 }
 </style>

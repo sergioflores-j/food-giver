@@ -3,10 +3,20 @@
     "chatId": "d42c9d7f-b990-4db0-b413-df8908f42f90",
     "createdAt": "2020-08-14T01:00:06.813Z",
     "from": "sergio.flores@univille.edu.br",
-    "message": "Olá, tudo bem?",
+    "message": "Olá, tudo bem? \nEstou entrando em contato sobre a doação de Banana.",
     "messageId": "e3527bbd-de0a-4218-8e3f-0b46e2764499",
     "read": false,
     "to": "carolina.trindade@univille.edu.br",
     "updatedAt": "2020-08-14T01:00:06.813Z"
+  },
+  {
+    "chatId": "d42c9d7f-b990-4db0-b413-df8908f42f90",
+    "createdAt": "2020-08-15T11:20:06.813Z",
+    "from": "carolina.trindade@univille.edu.br",
+    "message": "Olá, tudo certo Sergio? \nVamos combinar o local da entrega?",
+    "messageId": "b5edfaf5-6591-46b1-915b-e6d8dfbbe09c",
+    "read": false,
+    "to": "sergio.flores@univille.edu.br",
+    "updatedAt": "2020-08-15T011:20:06.813Z"
   }
 ]
