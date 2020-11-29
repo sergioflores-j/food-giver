@@ -6,3 +6,15 @@ export const listByUserEmail = async () => {
 
   if (res.status === 200) return res.data;
 };
+
+export const get = async chatId => {
+  const res = await axios.get(`${process.env.VUE_APP_CHAT_ENDPOINT}/v1/chats/${chatId}`);
+
+  if (res.status === 200) return res.data;
+};
+
+export const getMessages = async chatId => {
+  const res = await axios.get(`${process.env.VUE_APP_CHAT_ENDPOINT}/v1/chats/${chatId}/messages`);
+
+  if (res.status === 200) return res.data;
+};

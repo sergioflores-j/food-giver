@@ -68,6 +68,14 @@ functions:
           method: GET
           cors: true
           authorizer: customAuthorizer
+  getChatMessages:
+    handler: src/v1/listMessages.run
+    events:
+      - http:
+          path: /chat/v1/chats/{chatId}/messages
+          method: GET
+          cors: true
+          authorizer: customAuthorizer
   
   # Lambda Authorizers
   # authWebsocket:
@@ -94,6 +102,11 @@ functions:
       - websocket:
           # Handles all unrouted messages
           route: $default
+  wsNewMessage:
+    handler: src/v1/ws/newMessage.run
+    events:
+      - websocket:
+          route: newMessage
 
 custom:
   serverless-offline:

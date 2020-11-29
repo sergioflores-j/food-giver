@@ -1,70 +1,279 @@
 <template>
-  <div class="chat">
-    <v-btn @click="connect">Connect</v-btn>
-    <v-btn @click="send">Send</v-btn>
-    <v-btn @click="disconnect">Disconnect</v-btn>
-    <pre>{{ messages.join('\n') }}</pre>
-  </div>
+  <v-card
+    class="mx-auto chat-room-container"
+    max-width="700"
+    :loading="loading.chat"
+  >
+    <v-row>
+      <v-col align-self="center" class="mx-5 ellipsis chat-participant-container" :title="otherParticipantEmail">
+        <template v-if="loading.chat">
+          Entrando...
+        </template>
+        <template v-if="!loading.chat">
+          <v-avatar :color="chatColor">
+            {{ emailInitials }}
+          </v-avatar>
+          <div class="ellipsis" style="margin: 5px;">
+            {{ otherParticipantEmail }}
+            <transition name="fade-transition">
+              <div v-if="isOtherParticipantOnline" class="online-badge">
+                Online
+              </div>
+            </transition>
+          </div>
+        </template>
+      </v-col>
+    </v-row>
+
+    <v-row v-if="!loading.chat">
+      <v-col style="padding-top: 0; padding-bottom: 0;">
+        <Chat
+          :chat="chat"
+          :messages="messages"
+          :is-loading="loading.messages"
+          @new-message="newMessage"
+        />
+      </v-col>
+    </v-row>
+
+    <v-snackbar
+      v-model="showErrorSnackbar"
+      light
+    >
+      Não foi possível obter os dados do chat, tente novamente mais tarde!
+
+      <template #action="{ attrs }">
+        <v-btn
+          color="red"
+          text
+          v-bind="attrs"
+          @click="showErrorSnackbar = false"
+        >
+          Fechar
+        </v-btn>
+      </template>
+    </v-snackbar>
+  </v-card>
 </template>
 
 <script>
 import qs from 'querystring';
+import { get, getMessages } from '@/services/chat';
+import Chat from '@/components/Chat.vue';
 
 export default {
   name: 'ChatView',
+  components: {
+    Chat,
+  },
+  props: {
+    chatId: { type: String, default: '' },
+  },
   data() {
     return {
+      chat: undefined,
       messages: [],
-      websocket: undefined,
-      socketArgs: qs.stringify({
-        participant1: this.$store.state.auth.user.email,
-        participant2: this.$store.state.auth.user.email.includes('carolina') ? 'sergio.flores@univille.edu.br' : 'carolina.trindade@univille.edu.br',
-      }),
+      websocket: {
+        websocket: undefined,
+        isDestroying: false,
+      },
       eventType: 'test',
+      loading: {
+        chat: false,
+        messages: false,
+      },
+      connectionChecker: '',
+      showErrorSnackbar: false,
     };
   },
+  computed: {
+    sessionUser() {
+      return this.$store.getters['auth/user'];
+    },
+    emailInitials() {
+      return this.otherParticipantEmail.substr(0, 1).toUpperCase();
+    },
+    otherParticipantEmail() {
+      if (!this.chat) return '';
+
+      if (this.chat.participant1 === this.sessionUser.email) return this.chat.participant2;
+      return this.chat.participant1;
+    },
+    socketArgs() {
+      return qs.stringify({
+        chatId: this.chatId,
+        userEmail: this.sessionUser.email,
+      });
+    },
+    isOtherParticipantOnline() {
+      if (!this.chat || !this.chat.activeSocket) return false;
+      if (this.chat.activeSocket[this.otherParticipantEmail]) return true;
+
+      return false;
+    },
+    chatColor() {
+      return this.isOtherParticipantOnline ? 'green' : 'grey';
+    },
+  },
+  async mounted() {
+    console.log('chatId :>> ', this.chatId);
+    await this.getChatInfo();
+    await this.connect();
+    this.loadMessages();
+  },
+  beforeDestroy() {
+    this.websocket.isDestroying = true;
+    this.disconnect();
+  },
+  destroyed() {
+    clearTimeout(this.connectionChecker);
+  },
   methods: {
+    async getChatInfo() {
+      if (this.loading.chat) return;
+
+      this.loading.chat = true;
+      try {
+        this.chat = await get(this.chatId);
+      } catch (err) {
+        this.showErrorSnackbar = true;
+      } finally {
+        this.loading.chat = false;
+      }
+    },
+    async loadMessages() {
+      if (this.loading.messages) return;
+
+      this.loading.messages = true;
+      try {
+        const { messages } = await getMessages(this.chatId);
+        this.messages = messages;
+      } catch (err) {
+        this.showErrorSnackbar = true;
+      } finally {
+        this.loading.messages = false;
+      }
+    },
+    newMessage(message) {
+      this.send({ route: 'newMessage', data: { message } });
+      this.messages.push({ message, from: this.sessionUser.email });
+    },
+    socketEventHandler(event, result) {
+      switch (event) {
+        case 'newMessage':
+          // eslint-disable-next-line no-case-declarations
+          const index = this.messages.findIndex(m => (
+            !m.messageId
+            && result.message === m.message
+            && m.from === this.sessionUser.email
+          ));
+
+          console.log('index', index);
+
+          // Message sent by the user
+          if (index !== -1)
+            this.messages.splice(index, 1, result);
+          // Message received from the other user
+          else this.messages.push(result);
+
+          break;
+        case 'connected':
+          this.$set(this.chat.activeSocket, this.otherParticipantEmail, { connectionId: result.connectionId });
+          break;
+        case 'disconnected':
+          this.$delete(this.chat.activeSocket, this.otherParticipantEmail);
+          break;
+        default:
+          console.log('Unexpected Event');
+      }
+    },
     connect() {
+      console.log('Connecting...');
       /*
        * See https://html.spec.whatwg.org/multipage/indices.html#events-2
        * for details around each WebSocket event type.
        */
-      // WebSocket sends a message to API Gateway on creation that gets
-      // routed to the '$connect' route
-      this.websocket = new WebSocket(`ws://localhost:4000/?${this.socketArgs}`);
-      console.log('this.websocket', this.websocket);
+      this.websocket.client = new WebSocket(`${process.env.VUE_APP_CHAT_WS_ENDPOINT}?${this.socketArgs}`);
+
+      this.checkSocketConnection();
+
       // util para reabrir a connection caso tenha sido fechada por inatividade
-      this.websocket.onclose = ({ wasClean, code, reason }) => {
-        this.messages.push(
+      this.websocket.client.onclose = ({ wasClean, code, reason }) => {
+        console.log(
           `onclose: ${JSON.stringify({ wasClean, code, reason })}`,
         );
+        clearTimeout(this.connectionChecker);
+
+        // ? se perdeu a conexão e não foi pq saiu do componente, tenta se reconectar
+        if (
+          !this.websocket.isDestroying
+          && (
+            !wasClean // interrupção na internet, queda, etc
+            || code === 1001 // timeout final (2h) deve reconectar...
+          )
+        ) {
+          setTimeout(() => {
+            this.connect();
+          }, 2000);
+        }
       };
-      this.websocket.onerror = error => {
-        console.log(error);
-        this.messages.push(
+
+      this.websocket.client.onerror = error => {
+        console.error('Socket error:', error);
+        console.log(
           'onerror: An error has occurred. See console for details.',
         );
+        clearTimeout(this.connectionChecker);
       };
-      this.websocket.onmessage = ({ data }) => {
-        this.messages.push(`onmessage: ${data}`);
+
+      this.websocket.client.onmessage = ({ data }) => {
+        console.log(`onmessage: ${data}`);
+        const { event, ...result } = typeof data === 'string' ? JSON.parse(data) : data;
+
+        this.socketEventHandler(event, result);
       };
-      this.websocket.onopen = () => {
-        this.messages.push('onopen: Connected successfully.');
+
+      this.websocket.client.onopen = () => {
+        console.log('onopen: Connected successfully.');
       };
     },
-    send() {
-      this.messages.push('client: Sending a message.');
-      this.websocket.send(
-        // This message will be routed to 'routeA' based on the 'action' property
-        JSON.stringify({ action: 'routeA', data: 'Hello from client.' }),
-      );
+    checkSocketConnection() {
+      clearTimeout(this.connectionChecker);
+      this.connectionChecker = setTimeout(() => {
+        console.log('checkingSocketConnection');
+        this.send({ data: 'ping' });
+        this.checkSocketConnection();
+      }, 5000 * 60); // 5 min
+    },
+    send({ route = '$default', data = '' } = {}) {
+      console.log('client: Sending a message.');
+      this.websocket.client.send(JSON.stringify({ action: route, data }));
     },
     disconnect() {
-      // WebSocket sends a $disconnect message to the server on page reload or close, so you do not have to close the connection yourself in those scenarios
-      // WebSocket sends a message to API Gateway that gets routed to the '$disconnect' route.
-      this.messages.push('client: Closing the connection.');
-      this.websocket.close();
+      console.log('client: Closing the connection.');
+      this.websocket.client.close();
     },
   },
 };
 </script>
+
+<style lang="scss" scoped>
+.ellipsis {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.chat-room-container {
+  min-height: calc(100vh - 400px);
+}
+.chat-participant-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+
+  .online-badge {
+    font-size: 70%;
+    color: #636363;
+  }
+}
+</style>

@@ -4,8 +4,8 @@ import env from '@root/ms.env';
 import { connectionHandler } from '@/lib/websocket/connectionHandler';
 
 const getParameters = ({ evt }) => ({
-  participant1: get(evt, 'queryStringParameters.participant1'), // ? maybe pegar da session :D
-  participant2: get(evt, 'queryStringParameters.participant2'),
+  chatId: get(evt, 'queryStringParameters.chatId'),
+  userEmail: get(evt, 'queryStringParameters.userEmail'), // ? maybe pegar da session :D
   connectionId: get(evt, 'requestContext.connectionId'),
   connectedAt: get(evt, 'requestContext.connectedAt'),
   action: get(evt, 'requestContext.routeKey'),

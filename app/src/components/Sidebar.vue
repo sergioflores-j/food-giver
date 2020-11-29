@@ -60,20 +60,19 @@ export default {
         {
           text: 'Necessidades',
           icon: 'mdi-food-drumstick-outline',
-          action: '',
-          profile: '',
+          action: '/necessities',
+          profile: 'beneficiary',
         },
         {
           text: 'Chats',
           icon: 'mdi-chat',
           action: '/chats',
-          profile: 'all',
         },
         {
           text: 'Seleção de Doação',
           icon: 'mdi-cursor-default-click',
           action: '/select-donation',
-          profile: '',
+          profile: 'beneficiary',
         },
       ],
     };
@@ -99,6 +98,7 @@ export default {
   },
   methods: {
     checkAccess({ profile }) {
+      if (!profile) return true;
       return this.user.profile === 'all' || this.user.profile === profile;
     },
   },

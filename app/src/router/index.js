@@ -70,6 +70,25 @@ export const routes = [
     component: () => import(/* webpackChunkName: "select_donation" */ '../views/SelectDonation.vue'),
   },
   {
+    path: '/necessities',
+    meta: {
+      requiresAuth: true,
+    },
+    children: [
+      {
+        path: '',
+        name: 'Necessities_list',
+        component: () => import(/* webpackChunkName: "necessity" */ '../views/Necessity/NecessityList.vue'),
+      },
+      {
+        path: 'new',
+        name: 'Necessities_New',
+        component: () => import(/* webpackChunkName: "necessity" */ '../views/Necessity/NewNecessity.vue'),
+      },
+    ],
+    component: () => import(/* webpackChunkName: "necessity" */ '../views/Necessity/Necessity.vue'),
+  },
+  {
     path: '/chats',
     meta: {
       requiresAuth: true,
@@ -83,6 +102,7 @@ export const routes = [
       {
         path: ':chatId',
         name: 'Chat_screen',
+        props: true,
         component: () => import(/* webpackChunkName: "chat" */ '../views/Chat/ChatRoom.vue'),
       },
     ],

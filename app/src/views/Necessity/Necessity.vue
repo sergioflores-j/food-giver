@@ -1,12 +1,12 @@
 <template>
-  <v-container fluid style="padding: 0;">
+  <v-container>
     <router-view />
   </v-container>
 </template>
 
 <script>
 export default {
-  name: 'ChatView',
+  name: 'NecessityView',
   data() {
     return {};
   },

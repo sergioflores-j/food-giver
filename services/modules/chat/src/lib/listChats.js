@@ -1,5 +1,5 @@
 // @ts-check
-import { error } from '@shared/utils/utils';
+import { error, sortByDate } from '@shared/utils/utils';
 import env from '@root/ms.env';
 
 import ChatDao from '@shared/dao/ChatDao';
@@ -21,7 +21,7 @@ export const run = async ({ userEmail }) => {
       fields: ['chatId', 'participant1', 'participant2', 'createdAt', 'updatedAt'],
     });
 
-    return { chats };
+    return { chats: sortByDate(chats, 'updatedAt', 'desc') };
   } catch (err) {
     console.log('Error ListChats Run', err);
     console.log('Params: ', {
