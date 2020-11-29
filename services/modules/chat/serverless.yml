@@ -1,5 +1,6 @@
 service: food-giver-chat
 package:
+  individually: true
   exclude:
     - node_modules/aws-sdk/**
 
@@ -15,7 +16,6 @@ provider:
   logRetentionInDays: 7
   apiGateway:
     minimumCompressionSize: 102400 # Compress response when larger than specified size in bytes (must be between 0 and 10485760)
-  # TODO: verificar
   iamRoleStatements:
     ${file(../../shared/serverless-config.yml):iamRoleStatements}
 
@@ -30,7 +30,7 @@ provider:
 functions:
   customAuthorizer:
     # TODO: find a better way (not arn :/)
-    handler: ../auth/src/v1/authorizer.run
+    handler: src/v1/authorizer.run
 
   healthCheck:
     handler: src/v1/health/check.run
@@ -73,6 +73,7 @@ functions:
           cors: true
           authorizer: customAuthorizer
   
+  # TODO: Lambda authorizer for websocket
   # Lambda Authorizers
   # authWebsocket:
   #   handler: src/v1/authWebsocket.run
@@ -106,7 +107,8 @@ functions:
 
 custom:
   serverless-offline:
-    port: ${file(../../../dev.serverless.env.json):port.chat}
+    lambdaPort: null
+    httpPort: ${file(../../../dev.serverless.env.json):port.chat}
     websocketPort: ${file(../../../dev.serverless.env.json):port.chat_ws}
   # Deletes all previous versions of the functions except for the last 'number' after deploy
   # Prevents the error: CodeStorageExceededException

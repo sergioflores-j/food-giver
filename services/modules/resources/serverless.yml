@@ -1,5 +1,6 @@
 service: food-giver-resources
 package:
+  individually: true
   exclude:
     - node_modules/aws-sdk/**
 
@@ -52,7 +53,8 @@ custom:
           - table: FG.User
             sources: [./test/_fixtures/FG.User.json]
   serverless-offline:
-    port: ${file(../../../dev.serverless.env.json):port.resources}
+    lambdaPort: null
+    httpPort: ${file(../../../dev.serverless.env.json):port.resources}
   # Deletes all previous versions of the functions except for the last 'number' after deploy
   # Prevents the error: CodeStorageExceededException
   prune:
