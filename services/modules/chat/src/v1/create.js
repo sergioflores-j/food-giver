@@ -16,9 +16,14 @@ export const run = async event => {
   try {
     const parameters = getParameters({ evt: event });
 
-    const data = await create(parameters);
+    const { created, ...data } = await create(parameters);
 
-    return lambdaResp(env.STATUS_CREATED, data);
+    return lambdaResp(
+      created
+        ? env.STATUS_CREATED
+        : env.STATUS_SUCCESS,
+      data,
+    );
   } catch (err) {
     return lambdaRespErr(err);
   }

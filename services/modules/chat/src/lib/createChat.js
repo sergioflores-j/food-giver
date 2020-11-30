@@ -17,14 +17,14 @@ export const create = async ({ participant1, participant2 }) => {
 
 export const run = async ({ participant1, participant2 }) => {
   try {
-    // TODO: check if user exists?
+    if (participant1 === participant2) throw error(env.STATUS_BAD_REQUEST, 'Participants must be different');
 
     const chat = await createOrUpdateChat({
       participant1,
       participant2,
     });
 
-    return { chat };
+    return { chat, created: chat.updatedAt === chat.createdAt };
   } catch (err) {
     console.log('Error CreateChat Run', err);
     console.log('Params: ', {
