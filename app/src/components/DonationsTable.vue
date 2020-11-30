@@ -24,6 +24,7 @@
       :single-select="singleSelect"
       :loading="isLoading"
       loading-text="Carregando..."
+      no-data-text="Nenhuma doação encontrada"
       :search="search"
       v-on="$listeners"
     >
