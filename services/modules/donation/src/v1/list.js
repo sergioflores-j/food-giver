@@ -5,6 +5,7 @@ import env from '@root/ms.env';
 
 const getParameters = ({ evt }) => ({
   userEmail: decodeURIComponent(evt.pathParameters?.userEmail || ''),
+  sessionUser: evt.requestContext?.authorizer?.principalId,
 });
 
 export const run = async event => {
