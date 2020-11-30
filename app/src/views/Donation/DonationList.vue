@@ -3,7 +3,12 @@
     <v-card-title>
       Minhas doações
       <v-spacer />
-      <v-btn class="mt-2" color="primary" to="/donations/new">
+      <v-btn
+        class="mt-2"
+        color="primary"
+        to="/new"
+        append
+      >
         <v-icon>mdi-plus-circle-outline</v-icon>
         Nova doação
       </v-btn>
