@@ -69,7 +69,7 @@
     </template>
 
     <v-snackbar v-model="showErrorSnackbar" light>
-      Não foi possível buscar os dados da doação, tente novamente mais tarde!
+      {{ errorText }}
 
       <template #action="{ attrs }">
         <v-btn
@@ -87,7 +87,8 @@
 
 <script>
 import { get } from '@/services/donation';
-import { listByUserEmail as listNecessitiesByUser } from '@/services/necessity';
+import { create as createChat, createMessage as createChatMessage } from '@/services/chat';
+import { listByUserEmail as listNecessitiesByUser, selectDonation } from '@/services/necessity';
 import DonationDetail from '@/components/DonationDetail.vue';
 
 export default {
@@ -106,6 +107,7 @@ export default {
       showErrorSnackbar: false,
       selectedNecessity: 0,
       necessities: [],
+      errorText: '',
       loading: {
         donation: false,
         necessities: false,
@@ -116,6 +118,9 @@ export default {
   computed: {
     isLoading() {
       return Object.values(this.loading).some(i => i);
+    },
+    sessionUser() {
+      return this.$store.getters['auth/user'];
     },
   },
   mounted() {
@@ -134,6 +139,7 @@ export default {
       } catch (err) {
         console.error('Error getDonation', err);
         this.showErrorSnackbar = true;
+        this.errorText = 'Não foi possível buscar os dados da doação, tente novamente mais tarde!';
       } finally {
         this.loading.donation = false;
       }
@@ -149,15 +155,42 @@ export default {
         console.error('error getNecessityList', err);
         // TODO: mostrar erros customizados na snackbar :D
         this.showErrorSnackbar = true;
+        this.errorText = 'Não foi possível buscar as suas necessidades, tente novamente mais tarde!';
       } finally {
         this.loading.necessities = false;
       }
     },
     async selectDonation() {
+      if (!this.selectedNecessity && this.selectedNecessity !== 0) return;
+
       console.log('this.selectedNecessity', this.selectedNecessity);
       this.loading.submit = true;
-      // TODO: redirect pro chat
-      this.$router.push('/select-donation');
+      const selectedNecessity = this.necessities[this.selectedNecessity];
+
+      try {
+        await selectDonation(selectedNecessity.necessityId, {
+          userEmail: this.userEmail,
+          donationId: this.donationId,
+        });
+
+        await this.startChat();
+      } catch (error) {
+        this.showErrorSnackbar = true;
+        this.errorText = 'Não foi possível selecionar a doação, tente novamente mais tarde!';
+      } finally {
+        this.loading.submit = false;
+      }
+    },
+    async startChat() {
+      const { chat } = await createChat({ participant1: this.sessionUser.email, participant2: this.userEmail });
+
+      await createChatMessage(chat.chatId, {
+        from: this.sessionUser.email,
+        to: this.user,
+        message: `Olá, gostaria de conversar sobre a doação de ${this.donation.foodName}`,
+      });
+
+      this.$router.push(`/chats/${chat.chatId}`);
     },
   },
 };
