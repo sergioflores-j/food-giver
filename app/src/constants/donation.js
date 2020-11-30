@@ -5,7 +5,7 @@ export const conditions = {
   },
   almost_due: {
     label: 'Próprio para consumo em curto tempo',
-    color: 'yellow',
+    color: 'orange',
   },
   rotten: {
     label: 'Próprio para utilização como dejeto',

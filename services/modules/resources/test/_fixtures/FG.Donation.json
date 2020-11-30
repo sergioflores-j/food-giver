@@ -1,14 +1,5 @@
 [
   {
-    "condition": "rotten",
-    "daysWithGiver": 10,
-    "donationId": "c44919c6-a1c5-4bb5-9a98-59ac160f8b8d",
-    "expiresAt": "2020-08-13T23:57:18.180Z",
-    "finished": false,
-    "foodName": "Banana",
-    "userEmail": "carolina.trindade@univille.edu.br"
-  },
-  {
     "condition": "new",
     "createdAt": "2020-08-14T00:40:03.991Z",
     "daysWithGiver": 2,
