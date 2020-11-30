@@ -13,5 +13,13 @@
     "quantity": 10,
     "updatedAt": "2020-08-14T00:38:05.287Z",
     "userEmail": "sergio.flores@univille.edu.br"
+  },
+  {
+    "createdAt": "2020-08-14T00:38:05.287Z",
+    "foodName": "Arroz",
+    "necessityId": "76519ebd-211e-4945-a502-d41068ec5e77",
+    "quantity": 50,
+    "updatedAt": "2020-08-14T00:38:05.287Z",
+    "userEmail": "sergio.flores@univille.edu.br"
   }
 ]
