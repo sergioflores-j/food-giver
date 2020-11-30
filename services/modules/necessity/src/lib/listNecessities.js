@@ -18,10 +18,10 @@ export const run = async ({ userEmail }) => {
   try {
     const necessities = await new NecessityDao().query({
       userEmail,
-      fields: ['necessityId', 'foodName', 'quantity', 'finished', 'createdAt', 'updatedAt'],
+      fields: ['necessityId', 'foodName', 'quantity', 'finished', 'createdAt', 'updatedAt', 'donations'],
     });
 
-    return { necessities };
+    return { necessities: filterNecessities(necessities) };
   } catch (err) {
     console.log('Error ListNecessities Run', err);
     console.log('Params: ', {
@@ -30,6 +30,10 @@ export const run = async ({ userEmail }) => {
     throw err;
   }
 };
+
+export const filterNecessities = necessities => (
+  necessities.filter(necessity => !necessity.finished)
+);
 
 const checkParameters = ({ userEmail }) => {
   const errors = {};
