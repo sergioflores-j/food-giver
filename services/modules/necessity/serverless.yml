@@ -50,6 +50,24 @@ functions:
           cors: true
           authorizer: customAuthorizer
 
+  getNecessity:
+    handler: src/v1/get.run
+    events:
+      - http:
+          path: /necessity/v1/{userEmail}/necessities/{necessityId}
+          method: GET
+          cors: true
+          authorizer: customAuthorizer
+
+  selectDonation:
+    handler: src/v1/selectDonation.run
+    events:
+      - http:
+          path: /necessity/v1/{userEmail}/necessities/{necessityId}/donations
+          method: POST
+          cors: true
+          authorizer: customAuthorizer
+
 custom:
   serverless-offline:
     lambdaPort: null

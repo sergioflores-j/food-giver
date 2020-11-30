@@ -149,4 +149,22 @@ module.exports = class GenericDao {
       })),
     );
   }
+
+  async _updateControlFields({ params = {} }) {
+    const { Attributes } = await this._update({
+      params: {
+        ...params,
+        UpdateExpression: 'SET #updatedAt = :updatedAt',
+        ExpressionAttributeValues: {
+          ':updatedAt': new Date().toISOString(),
+        },
+        ExpressionAttributeNames: {
+          '#updatedAt': 'updatedAt',
+        },
+        ReturnValues: 'UPDATED_NEW',
+      },
+    });
+
+    return Attributes;
+  }
 };

@@ -221,25 +221,15 @@ module.exports = class ChatDao extends GenericDao {
     });
   }
 
-  async updateControlFields({ chatId }) {
-    const { Attributes } = await this._update({
+  updateControlFields({ chatId }) {
+    return this._updateControlFields({
       params: {
         TableName: TABLE_NAME,
         Key: {
           chatId,
         },
-        UpdateExpression: 'SET #updatedAt = :updatedAt',
-        ExpressionAttributeValues: {
-          ':updatedAt': new Date().toISOString(),
-        },
-        ExpressionAttributeNames: {
-          '#updatedAt': 'updatedAt',
-        },
         ConditionExpression: 'attribute_exists(chatId)',
-        ReturnValues: 'UPDATED_NEW',
       },
     });
-
-    return Attributes;
   }
 };

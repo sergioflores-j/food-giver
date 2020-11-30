@@ -69,4 +69,41 @@ module.exports = class Necessity extends GenericDao {
 
     return necessity;
   }
+
+  async updateDonations({ userEmail, necessityId, newDonation }) {
+    const { Attributes } = await this._update({
+      params: {
+        TableName: TABLE_NAME,
+        Key: {
+          userEmail,
+          necessityId,
+        },
+        ConditionExpression: 'attribute_exists(userEmail) AND attribute_exists(necessityId)',
+        UpdateExpression: 'SET #donations = list_append(if_not_exists(#donations, :empty_list), :donations)',
+        ExpressionAttributeNames: {
+          '#donations': 'donations',
+        },
+        ExpressionAttributeValues: {
+          ':donations': [newDonation],
+          ':empty_list': [],
+        },
+        ReturnValues: 'UPDATED_NEW',
+      },
+    });
+
+    return Attributes;
+  }
+
+  updateControlFields({ userEmail, necessityId }) {
+    return this._updateControlFields({
+      params: {
+        TableName: TABLE_NAME,
+        Key: {
+          userEmail,
+          necessityId,
+        },
+        ConditionExpression: 'attribute_exists(userEmail) AND attribute_exists(necessityId)',
+      },
+    });
+  }
 };
