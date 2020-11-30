@@ -17,6 +17,15 @@ module.exports = class DonationDao extends GenericDao {
     });
   }
 
+  scan({ fields = [] } = {}) {
+    return this._scan({
+      params: {
+        TableName: TABLE_NAME,
+      },
+      fields,
+    });
+  }
+
   query({ userEmail, fields = [] } = {}) {
     return this._query({
       params: {

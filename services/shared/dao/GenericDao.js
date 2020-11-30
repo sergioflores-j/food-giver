@@ -61,6 +61,38 @@ module.exports = class GenericDao {
     }
   }
 
+  async _scan({
+    params, fields = [], _items = [], stopOnLimit = false,
+  } = {}) {
+    try {
+      const { Items, LastEvaluatedKey } = await this.db.scan({
+        ...params,
+        ...mountProjectionExpression({ fields, options: params }),
+      }).promise();
+
+      const newItemsList = (Array.isArray(Items) && Items.length > 0)
+        ? _items.concat(Items)
+        : _items;
+
+      if (stopOnLimit && params.Limit && newItemsList.length >= params.Limit) return newItemsList;
+
+      if (LastEvaluatedKey) {
+        return this._scan({
+          fields,
+          params: {
+            ...params,
+            ExclusiveStartKey: LastEvaluatedKey,
+          },
+          _items: newItemsList,
+        });
+      }
+
+      return newItemsList;
+    } catch (err) {
+      throw err;
+    }
+  }
+
   async _getAll({ params, list, fields = [] } = {}) {
     let idx = 0;
     // ? Empacota de 25 requests por vez (limite do batchGet)

@@ -1,42 +1,22 @@
 // @ts-check
-import { error } from '@shared/utils/utils';
-import env from '@root/ms.env';
+import { sortByDate } from '@shared/utils/utils';
 
 import DonationDao from '@shared/dao/DonationDao';
 
-/**
- * @param {object} param0
- * @param {string} param0.userEmail
- */
-export const list = async ({ userEmail }) => {
-  checkParameters({ userEmail });
+export const list = async () => run();
 
-  return run({ userEmail });
-};
-
-export const run = async ({ userEmail }) => {
+export const run = async () => {
   try {
-    const donations = await new DonationDao().query({
-      userEmail,
-      fields: ['donationId', 'foodName', 'condition', 'createdAt', 'updatedAt', 'expiresAt'],
+    // TODO: listar doações próximas da localização recebida por parametro.
+    const donations = await new DonationDao().scan({
+      fields: ['donationId', 'foodName', 'condition', 'updatedAt', 'expiresAt'],
     });
 
-    return { donations };
+    return { donations: sortByDate(donations, 'updatedAt', 'desc') };
   } catch (err) {
     console.log('Error ListDonations Run', err);
-    console.log('Params: ', {
-      userEmail,
-    });
     throw err;
   }
-};
-
-const checkParameters = ({ userEmail }) => {
-  const errors = {};
-
-  if (!userEmail) errors.userEmail = 'undefined';
-
-  if (Object.keys(errors).length) throw error(env.STATUS_BAD_REQUEST, errors);
 };
 
 export default list;

@@ -5,8 +5,8 @@ const env = require('../ms.env');
 const TABLE_NAME = 'FG.User'; // TODO: colocar em variavel de ambiente
 
 module.exports = class UserDao extends GenericDao {
-  get({ email, fields = [] } = {}) {
-    return this._get({
+  async get({ email, fields = [], excludePassword = false } = {}) {
+    const item = await this._get({
       params: {
         TableName: TABLE_NAME,
         Key: {
@@ -15,6 +15,13 @@ module.exports = class UserDao extends GenericDao {
       },
       fields,
     });
+
+    if (excludePassword && item) {
+      const { password, ...user } = item;
+      return user;
+    }
+
+    return item;
   }
 
   delete({ email } = {}) {

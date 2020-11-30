@@ -1,21 +1,17 @@
 import { lambdaResp, lambdaRespErr } from '@shared/utils/utils';
-import { list as listByUser } from '@/lib/listDonationsByUser';
-import { list } from '@/lib/listDonations';
+import { get } from '@/lib/getDonation';
 import env from '@root/ms.env';
 
 const getParameters = ({ evt }) => ({
-  userEmail: decodeURIComponent(evt.pathParameters?.userEmail || ''),
+  donationId: evt.pathParameters.donationId,
+  userEmail: decodeURIComponent(evt.pathParameters.userEmail),
 });
 
 export const run = async event => {
   try {
     const parameters = getParameters({ evt: event });
 
-    let data = {};
-
-    if (parameters.userEmail)
-      data = await listByUser(parameters);
-    else data = await list(parameters);
+    const data = await get(parameters);
 
     return lambdaResp(env.STATUS_SUCCESS, data);
   } catch (err) {
