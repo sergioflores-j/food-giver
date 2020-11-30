@@ -14,6 +14,7 @@
       <v-btn
         color="primary"
         to="/necessities/new"
+        style="margin: 5px 0;"
       >
         <v-icon>mdi-plus-circle-outline</v-icon>
         Nova necessidade
