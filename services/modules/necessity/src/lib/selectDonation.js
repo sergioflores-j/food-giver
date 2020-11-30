@@ -32,7 +32,7 @@ export const run = async ({ donation, userEmail, necessityId }) => {
         },
       }),
       new DonationDao().updateDirectedTo({
-        userEmail,
+        userEmail: donation.userEmail,
         donationId: donation.donationId,
         newNecessity: {
           userEmail,
@@ -52,7 +52,7 @@ export const run = async ({ donation, userEmail, necessityId }) => {
         necessityId,
       }),
       new DonationDao().updateControlFields({
-        userEmail,
+        userEmail: donation.userEmail,
         donationId: donation.donationId,
       }),
     ]);
