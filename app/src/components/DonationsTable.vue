@@ -18,12 +18,14 @@
       :headers="headers"
       :items="donations"
       :items-per-page="5"
+      :item-class="itemClass"
       item-key="donationId"
       show-select
       :single-select="singleSelect"
       :loading="isLoading"
       loading-text="Carregando..."
       :search="search"
+      v-on="$listeners"
     >
       <!-- eslint-disable-next-line vue/valid-v-slot -->
       <template #item.expiresAt="{ item, value }">
@@ -59,9 +61,10 @@ export default {
   name: 'DonationsTable',
   props: {
     donations: { type: Array, default: () => [] },
-    selected: { type: Array, default: () => [] },
+    selected: { type: [Array, Object], default: () => [] },
     isLoading: { type: Boolean, default: false },
     singleSelect: { type: Boolean, default: false },
+    itemClass: { type: [String, Function], default: () => () => '' },
   },
   data() {
     return {
@@ -98,5 +101,4 @@ export default {
 </script>
 
 <style>
-
 </style>

@@ -14,3 +14,15 @@ export const listByUserEmail = async () => {
 
   if (res.status === 200) return res.data;
 };
+
+export const list = async () => {
+  const res = await axios.get(`${process.env.VUE_APP_DONATION_ENDPOINT}/v1/donations`);
+
+  if (res.status === 200) return res.data;
+};
+
+export const get = async (userEmail, donationId) => {
+  const res = await axios.get(`${process.env.VUE_APP_DONATION_ENDPOINT}/v1/users/${userEmail}/donations/${donationId}`);
+
+  if (res.status === 200) return res.data;
+};

@@ -9,7 +9,7 @@ export const run = async () => {
   try {
     // TODO: listar doações próximas da localização recebida por parametro.
     const donations = await new DonationDao().scan({
-      fields: ['donationId', 'foodName', 'condition', 'updatedAt', 'expiresAt'],
+      fields: ['donationId', 'userEmail', 'foodName', 'condition', 'createdAt', 'updatedAt', 'expiresAt'],
     });
 
     return { donations: sortByDate(donations, 'updatedAt', 'desc') };

@@ -89,3 +89,14 @@ export default {
   },
 };
 </script>
+
+<style lang="scss">
+.cursor-pointer {
+  cursor: pointer;
+}
+.ellipsis {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+</style>

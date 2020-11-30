@@ -63,11 +63,23 @@ export const routes = [
   },
   {
     path: '/select-donation',
-    name: 'SelectDonation',
     meta: {
       requiresAuth: true,
     },
-    component: () => import(/* webpackChunkName: "select_donation" */ '../views/SelectDonation.vue'),
+    children: [
+      {
+        path: '',
+        name: 'SelectDonation_list',
+        component: () => import(/* webpackChunkName: "select_donation" */ '../views/SelectDonation/SelectDonationList.vue'),
+      },
+      {
+        path: ':userEmail/:donationId',
+        props: true,
+        name: 'Donation_Selected',
+        component: () => import(/* webpackChunkName: "select_donation" */ '../views/SelectDonation/SelectedDonation.vue'),
+      },
+    ],
+    component: () => import(/* webpackChunkName: "select_donation" */ '../views/SelectDonation/SelectDonation.vue'),
   },
   {
     path: '/necessities',
