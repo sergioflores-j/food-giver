@@ -11,10 +11,7 @@
         hide-details
       />
       <v-spacer />
-      <v-btn
-        color="primary"
-        to="/donations/new"
-      >
+      <v-btn class="mt-2" color="primary" to="/donations/new">
         <v-icon>mdi-plus-circle-outline</v-icon>
         Nova doação
       </v-btn>
@@ -33,20 +30,17 @@
       class="elevation-1"
     >
       <!-- eslint-disable-next-line vue/valid-v-slot -->
-      <template #item.condition="{ item, value }">
-        <v-chip
+      <template #item.expiresAt="{ item, value }">
+        <!-- <v-chip
           v-if="item.expiresAt"
           :color="getConditionColor(value)"
           dark
+          class="d-none d-sm-flex flex-row"
         >
           {{ getConditionLabel(value) }}
-        </v-chip>
-        <v-chip
-          v-if="item.expiresAt"
-          color="grey"
-          dark
-        >
-          {{ formatDateTime(item.expiresAt) }}
+        </v-chip> -->
+        <v-chip v-if="value" :color="getConditionColor(item.condition)" dark>
+          {{ formatDateTime(value) }}
         </v-chip>
       </template>
       <!-- eslint-disable-next-line vue/valid-v-slot -->
@@ -58,10 +52,7 @@
         {{ formatDateTime(value) }}
       </template>
     </v-data-table>
-    <v-snackbar
-      v-model="showErrorSnackbar"
-      light
-    >
+    <v-snackbar v-model="showErrorSnackbar" light>
       Não foi possível obter suas doações, tente novamente mais tarde!
 
       <template #action="{ attrs }">
@@ -94,7 +85,7 @@ export default {
       search: '',
       headers: [
         { text: 'Comida', value: 'foodName' },
-        { text: 'Condição', value: 'condition' },
+        { text: 'Validade', value: 'expiresAt' },
         { text: 'Criação', value: 'createdAt' },
         { text: 'Última Atualização', value: 'updatedAt' },
       ],
