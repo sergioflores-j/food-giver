@@ -13,7 +13,7 @@
       <v-spacer />
       <v-btn
         color="primary"
-        to="/new"
+        to="new"
         append
         style="margin: 5px 0;"
       >

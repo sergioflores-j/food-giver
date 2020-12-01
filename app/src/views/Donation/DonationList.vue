@@ -6,7 +6,7 @@
       <v-btn
         class="mt-2"
         color="primary"
-        to="/new"
+        to="new"
         append
       >
         <v-icon>mdi-plus-circle-outline</v-icon>
