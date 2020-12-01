@@ -185,7 +185,7 @@ export default {
       }
     },
     async selectDonation() {
-      if ((!this.selectedNecessity && this.selectedNecessity === 0) || this.selectedNecessity < 0) {
+      if ((!this.selectedNecessity && this.selectedNecessity !== 0) || this.selectedNecessity < 0) {
         this.openSnackbar('Selecione uma necessidade a ser atendida', { type: 'warning' });
         return;
       }

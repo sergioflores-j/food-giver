@@ -31,6 +31,7 @@
       :single-select="singleSelect"
       :loading="isLoading.list"
       loading-text="Carregando..."
+      no-data-text="Nenhuma necessidade encontrada"
       :search="search"
       class="elevation-1"
     >

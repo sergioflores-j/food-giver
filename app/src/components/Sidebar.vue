@@ -89,7 +89,7 @@ export default {
       return `${
         nameSplit[0].substr(0, 1)
       }${
-        nameSplit.length > 1 && nameSplit[nameSplit.length - 1].substr(0, 1)
+        nameSplit.length > 1 ? nameSplit[nameSplit.length - 1].substr(0, 1) : ''
       }`;
     },
   },
