@@ -7,21 +7,28 @@ import NecessityDao from '@shared/dao/NecessityDao';
 /**
  * @param {object} param0
  * @param {string} param0.userEmail
+ * @param {boolean} [param0.showFinished]
  */
-export const list = async ({ userEmail }) => {
-  checkParameters({ userEmail });
+export const list = async ({ userEmail, showFinished = true }) => {
+  const params = { userEmail, showFinished };
 
-  return run({ userEmail });
+  checkParameters(params);
+
+  return run(params);
 };
 
-export const run = async ({ userEmail }) => {
+export const run = async ({ userEmail, showFinished }) => {
   try {
     const necessities = await new NecessityDao().query({
       userEmail,
       fields: ['necessityId', 'foodName', 'quantity', 'finished', 'createdAt', 'updatedAt', 'donations'],
     });
 
-    return { necessities: filterNecessities(necessities) };
+    // TODO: improve this filter
+    if (!showFinished)
+      return { necessities: filterNecessities(necessities) };
+
+    return { necessities };
   } catch (err) {
     console.log('Error ListNecessities Run', err);
     console.log('Params: ', {

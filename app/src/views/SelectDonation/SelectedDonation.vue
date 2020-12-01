@@ -38,15 +38,35 @@
 
           <v-list v-if="!loading.necessities">
             <v-list-item-group v-model="selectedNecessity" color="primary">
-              <v-list-item v-for="(necessity, index) of necessities" :key="index">
+              <v-list-item v-for="(necessity, index) of necessities" :key="index" :value="index">
                 <template #default="{ active }">
                   <v-list-item-action>
                     <v-checkbox :input-value="active" />
                   </v-list-item-action>
+
                   <v-list-item-content>
-                    <v-list-item-title>
-                      {{ necessity.foodName }} - {{ necessity.quantity }}
-                    </v-list-item-title>
+                    <template v-if="!necessity.donations">
+                      <v-list-item-title>
+                        {{ necessity.foodName }} - {{ necessity.quantity }}
+                      </v-list-item-title>
+                    </template>
+
+                    <template v-if="necessity.donations">
+                      <v-list-group>
+                        <template #activator>
+                          <v-list-item-title>
+                            {{ necessity.foodName }} - {{ necessity.quantity }}
+                          </v-list-item-title>
+                        </template>
+                        <v-list-item-content>Já atendida por:</v-list-item-content>
+
+                        <v-list dense>
+                          <v-list-item v-for="(d, dIndex) of necessity.donations" :key="`${d.donationId}-${dIndex}`" disabled>
+                            {{ d.donationId }} - {{ d.userEmail }}
+                          </v-list-item>
+                        </v-list>
+                      </v-list-group>
+                    </template>
                   </v-list-item-content>
                 </template>
               </v-list-item>
@@ -63,7 +83,7 @@
           :loading="loading.submit"
           @click="selectDonation"
         >
-          Finalizar
+          Selecionar
         </v-btn>
       </div>
     </template>
@@ -149,7 +169,7 @@ export default {
 
       this.loading.necessities = true;
       try {
-        const { necessities } = await listNecessitiesByUser();
+        const { necessities } = await listNecessitiesByUser({ showFinished: false });
         this.necessities = necessities;
       } catch (err) {
         console.error('error getNecessityList', err);
@@ -163,9 +183,9 @@ export default {
     async selectDonation() {
       if (!this.selectedNecessity && this.selectedNecessity !== 0) return;
 
-      console.log('this.selectedNecessity', this.selectedNecessity);
-      this.loading.submit = true;
       const selectedNecessity = this.necessities[this.selectedNecessity];
+
+      this.loading.submit = true;
 
       try {
         await selectDonation(selectedNecessity.necessityId, {
@@ -182,12 +202,15 @@ export default {
       }
     },
     async startChat() {
-      const { chat } = await createChat({ participant1: this.sessionUser.email, participant2: this.userEmail });
+      const { chat } = await createChat({
+        participant1: this.sessionUser.email,
+        participant2: this.userEmail,
+      });
 
       await createChatMessage(chat.chatId, {
         from: this.sessionUser.email,
         to: this.user,
-        message: `Olá, gostaria de conversar sobre a doação de ${this.donation.foodName}`,
+        message: `Olá, estou entrando em contato sobre a doação de ${this.donation.foodName}`,
       });
 
       this.$router.push(`/chats/${chat.chatId}`);
