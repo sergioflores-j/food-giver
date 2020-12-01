@@ -5,7 +5,7 @@ import env from '@root/ms.env';
 
 const getParameters = ({ evt }) => ({
   donationId: evt.pathParameters.donationId,
-  status: getBody(evt).status,
+  finished: getBody(evt).finished,
   userEmail: decodeURIComponent(evt.pathParameters.userEmail),
 });
 

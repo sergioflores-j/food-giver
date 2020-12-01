@@ -10,36 +10,36 @@ import DonationDao from '@shared/dao/DonationDao';
  * @param {object} param0
  * @param {string} param0.userEmail
  * @param {number} param0.donationId
- * @param {boolean} param0.status
+ * @param {boolean} param0.finished
  */
-export const changeStatus = async ({ donationId, userEmail, status }) => {
-  checkParameters({ donationId, userEmail, status });
+export const changeStatus = async ({ donationId, userEmail, finished }) => {
+  checkParameters({ donationId, userEmail, finished });
 
-  return run({ donationId, userEmail, status });
+  return run({ donationId, userEmail, finished });
 };
 
-export const run = async ({ userEmail, donationId, status }) => {
+export const run = async ({ userEmail, donationId, finished }) => {
   try {
     // TODO: check if user exists?
 
-    await new DonationDao().updateStatus({ userEmail, donationId, status});
+    await new DonationDao().updateStatus({ userEmail, donationId, finished });
 
     return { donation: donationId };
   } catch (err) {
     console.log('Error ChangeStatusDonation Run', err);
     console.log('Params: ', {
       donationId,
-      status,
+      finished,
     });
     throw err;
   }
 };
 
-const checkParameters = ({ userEmail, donationId, status }) => {
+const checkParameters = ({ userEmail, donationId, finished }) => {
   const errors = {};
 
   if (!userEmail) errors.userEmail = 'undefined';
-  if (!status) errors.status = 'undefined';
+  if (!finished) errors.finished = 'undefined';
   if (!donationId) errors.donationId = 'undefined';
 
   if (Object.keys(errors).length) throw error(env.STATUS_BAD_REQUEST, errors);

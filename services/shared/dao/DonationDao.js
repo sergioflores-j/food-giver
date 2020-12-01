@@ -116,7 +116,7 @@ module.exports = class DonationDao extends GenericDao {
     });
   }
 
-  async updateStatus({ userEmail, donationId, status }) {
+  async updateStatus({ userEmail, donationId, finished }) {
     const { Attributes } = await this._update({
       params: {
         TableName: TABLE_NAME,
@@ -130,7 +130,7 @@ module.exports = class DonationDao extends GenericDao {
           '#finished': 'finished',
         },
         ExpressionAttributeValues: {
-          ':finished': status,
+          ':finished': finished,
         },
         ReturnValues: 'UPDATED_NEW',
       },
