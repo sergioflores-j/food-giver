@@ -1,14 +1,16 @@
 import { getBody } from 'aws-lambda-utils-js';
 import { lambdaResp, lambdaRespErr } from '@shared/utils/utils';
-import { create } from '@/lib/createChat';
+import { create } from '@/lib/createMessage';
 import env from '@root/ms.env';
 
 const getParameters = ({ evt }) => {
   const body = getBody(evt);
 
   return {
-    participant1: body?.participant1,
-    participant2: body?.participant2,
+    chatId: evt.pathParameters.chatId,
+    to: body?.to,
+    from: body?.from,
+    message: body?.message,
   };
 };
 
@@ -16,14 +18,9 @@ export const run = async event => {
   try {
     const parameters = getParameters({ evt: event });
 
-    const { created, ...data } = await create(parameters);
+    const data = await create(parameters);
 
-    return lambdaResp(
-      created
-        ? env.STATUS_CREATED
-        : env.STATUS_SUCCESS,
-      data,
-    );
+    return lambdaResp(env.STATUS_CREATED, data);
   } catch (err) {
     return lambdaRespErr(err);
   }

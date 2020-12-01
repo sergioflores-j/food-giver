@@ -1,26 +1,20 @@
 [
   {
-    "condition": "rotten",
-    "daysWithGiver": 10,
-    "donationId": "c44919c6-a1c5-4bb5-9a98-59ac160f8b8d",
-    "expiresAt": "2020-08-13T23:57:18.180Z",
-    "finished": false,
-    "foodName": "Banana",
+    "condition": "new",
+    "createdAt": "2020-08-14T00:40:03.991Z",
+    "daysWithGiver": 2,
+    "donationId": "4eacbf9c-2cbf-4a17-83b2-bf0c4db75476",
+    "expiresAt": "2020-08-20T23:57:18.180Z",
+    "foodName": "Arroz",
+    "updatedAt": "2020-08-14T00:40:03.991Z",
     "userEmail": "carolina.trindade@univille.edu.br"
   },
   {
     "condition": "new",
     "createdAt": "2020-08-14T00:40:03.991Z",
     "daysWithGiver": 2,
-    "directedTo": [
-      {
-        "necessityId": "86bf7b41-ca06-465c-94f5-7a758a3483be",
-        "userEmail": "sergio.flores@univille.edu.br"
-      }
-    ],
     "donationId": "9dccc610-7fdb-42ca-b6e5-cf740c420fc1",
     "expiresAt": "2020-08-20T23:57:18.180Z",
-    "finished": true,
     "foodName": "Banana",
     "updatedAt": "2020-08-14T00:40:03.991Z",
     "userEmail": "sergio.flores@univille.edu.br"

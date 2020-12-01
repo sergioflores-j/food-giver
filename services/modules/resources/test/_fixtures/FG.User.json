@@ -2,9 +2,8 @@
   {
     "address": {
       "city": "Jaraguá do Sul",
-      "complement": null,
       "neighborhood": "Ilha da Figueira",
-      "number": "105",
+      "number": "226",
       "state": "SC",
       "street": "Rua Rotary",
       "zipCode": "89258443"
@@ -12,9 +11,9 @@
     "email": "carolina.trindade@univille.edu.br",
     "name": "Carolina Trindade",
     "password": "81dc9bdb52d04dc20036dbd8313ed055",
-    "personalId": "12347854504",
+    "federalId": "12347854504",
     "phone": "47999999999",
-    "profile": "giver"
+    "profile": "all"
   },
   {
     "address": {

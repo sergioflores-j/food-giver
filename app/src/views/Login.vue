@@ -116,13 +116,15 @@ export default {
       this.error = '';
 
       this.$store.dispatch('auth/login', { email: this.email, password: this.password })
-        .then(() => this.$router.push('/'))
         .catch(err => {
-          const errMessage = err.response.data?.error?.message;
+          console.error('Login error', err);
+
+          const errMessage = err.response?.data?.error?.message;
 
           if (err.response.status === 401) this.error = 'Usuário e/ou senha inválidos';
           else this.error = `Ocorreu um erro. ${errMessage ? `(${errMessage})` : ''}`;
         })
+        .then(() => this.$router.push({ path: '/', query: this.$route.query }))
         .finally(() => {
           this.loading = false;
         });

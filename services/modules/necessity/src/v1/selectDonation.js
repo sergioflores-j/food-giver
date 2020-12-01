@@ -1,22 +1,19 @@
+import { getBody } from 'aws-lambda-utils-js';
 import { lambdaResp, lambdaRespErr } from '@shared/utils/utils';
-import { list as listByUser } from '@/lib/listDonationsByUser';
-import { list } from '@/lib/listDonations';
+import { select } from '@/lib/selectDonation';
 import env from '@root/ms.env';
 
 const getParameters = ({ evt }) => ({
-  userEmail: decodeURIComponent(evt.pathParameters?.userEmail || ''),
-  sessionUser: evt.requestContext?.authorizer?.principalId,
+  donation: getBody(evt),
+  userEmail: decodeURIComponent(evt.pathParameters.userEmail),
+  necessityId: decodeURIComponent(evt.pathParameters.necessityId),
 });
 
 export const run = async event => {
   try {
     const parameters = getParameters({ evt: event });
 
-    let data = {};
-
-    if (parameters.userEmail)
-      data = await listByUser(parameters);
-    else data = await list(parameters);
+    const data = await select(parameters);
 
     return lambdaResp(env.STATUS_SUCCESS, data);
   } catch (err) {

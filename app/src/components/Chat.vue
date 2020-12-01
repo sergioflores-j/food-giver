@@ -8,6 +8,10 @@
         />
       </v-overlay>
 
+      <v-overlay :value="!messages.length" absolute>
+        Nenhuma mensagem, envie para começar o chat.
+      </v-overlay>
+
       <transition-group tag="div" name="fade-transition">
         <template
           v-for="(message, index) of messages"

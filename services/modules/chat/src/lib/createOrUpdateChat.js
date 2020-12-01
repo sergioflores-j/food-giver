@@ -25,15 +25,17 @@ export const createOrUpdateChat = async ({
   }
 };
 
-export const createChat = async ({ participant1, participant2 }) => (
-  new ChatDao().create({
+export const createChat = async ({ participant1, participant2 }) => {
+  const now = new Date().toISOString();
+
+  return new ChatDao().create({
     chat: {
       chatId: uuid(),
       participant1,
       participant2,
       activeSocket: {},
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+      createdAt: now,
+      updatedAt: now,
     },
-  })
-);
+  });
+};

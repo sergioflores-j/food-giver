@@ -80,8 +80,6 @@
           </v-btn>
         </v-col>
       </v-row>
-      <pre><code>{{ form }}</code></pre>
-      <pre><code>{{ hasChanges }}</code></pre>
     </v-form>
   </v-container>
 </template>

@@ -17,6 +17,15 @@ module.exports = class DonationDao extends GenericDao {
     });
   }
 
+  scan({ fields = [] } = {}) {
+    return this._scan({
+      params: {
+        TableName: TABLE_NAME,
+      },
+      fields,
+    });
+  }
+
   query({ userEmail, fields = [] } = {}) {
     return this._query({
       params: {
@@ -68,5 +77,42 @@ module.exports = class DonationDao extends GenericDao {
     });
 
     return donation;
+  }
+
+  async updateDirectedTo({ userEmail, donationId, newNecessity }) {
+    const { Attributes } = await this._update({
+      params: {
+        TableName: TABLE_NAME,
+        Key: {
+          userEmail,
+          donationId,
+        },
+        ConditionExpression: 'attribute_exists(userEmail) AND attribute_exists(donationId)',
+        UpdateExpression: 'SET #directedTo = list_append(if_not_exists(#directedTo, :empty_list), :directedTo)',
+        ExpressionAttributeNames: {
+          '#directedTo': 'directedTo',
+        },
+        ExpressionAttributeValues: {
+          ':directedTo': [newNecessity],
+          ':empty_list': [],
+        },
+        ReturnValues: 'UPDATED_NEW',
+      },
+    });
+
+    return Attributes;
+  }
+
+  updateControlFields({ userEmail, donationId }) {
+    return this._updateControlFields({
+      params: {
+        TableName: TABLE_NAME,
+        Key: {
+          userEmail,
+          donationId,
+        },
+        ConditionExpression: 'attribute_exists(userEmail) AND attribute_exists(donationId)',
+      },
+    });
   }
 };

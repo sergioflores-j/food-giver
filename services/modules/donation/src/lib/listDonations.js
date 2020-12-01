@@ -1,42 +1,42 @@
 // @ts-check
-import { error } from '@shared/utils/utils';
-import env from '@root/ms.env';
+import { sortByDate } from '@shared/utils/utils';
 
 import DonationDao from '@shared/dao/DonationDao';
 
-/**
- * @param {object} param0
- * @param {string} param0.userEmail
- */
-export const list = async ({ userEmail }) => {
-  checkParameters({ userEmail });
+export const list = async ({ sessionUser }) => run({ sessionUser });
 
-  return run({ userEmail });
-};
-
-export const run = async ({ userEmail }) => {
+export const run = async ({ sessionUser }) => {
   try {
-    const donations = await new DonationDao().query({
-      userEmail,
-      fields: ['donationId', 'foodName', 'condition', 'createdAt', 'updatedAt', 'expiresAt'],
+    // TODO: listar doações próximas da localização recebida por parametro.
+    const donations = await new DonationDao().scan({
+      fields: ['donationId', 'userEmail', 'foodName', 'condition', 'finished', 'createdAt', 'updatedAt', 'expiresAt'],
     });
 
-    return { donations };
+    return {
+      donations: sortByDate(
+        filterDonations(donations, { sessionUser }),
+        'updatedAt',
+        'desc',
+      ),
+    };
   } catch (err) {
     console.log('Error ListDonations Run', err);
-    console.log('Params: ', {
-      userEmail,
-    });
     throw err;
   }
 };
 
-const checkParameters = ({ userEmail }) => {
-  const errors = {};
+// TODO: deixar mais declarativo/funcional
+export const filterDonations = (donations, { sessionUser = '' } = {}) => (
+  donations.filter(donation => {
+    let valid = true;
 
-  if (!userEmail) errors.userEmail = 'undefined';
+    if (sessionUser)
+      valid = donation.userEmail !== sessionUser;
 
-  if (Object.keys(errors).length) throw error(env.STATUS_BAD_REQUEST, errors);
-};
+    if (donation.finished) valid = false;
+
+    return valid;
+  })
+);
 
 export default list;

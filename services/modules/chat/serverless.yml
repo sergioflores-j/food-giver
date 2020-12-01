@@ -72,6 +72,14 @@ functions:
           method: GET
           cors: true
           authorizer: customAuthorizer
+  createChatMessage:
+    handler: src/v1/createMessage.run
+    events:
+      - http:
+          path: /chat/v1/chats/{chatId}/messages
+          method: POST
+          cors: true
+          authorizer: customAuthorizer
   
   # TODO: Lambda authorizer for websocket
   # Lambda Authorizers

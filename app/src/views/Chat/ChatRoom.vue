@@ -258,11 +258,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.ellipsis {
-  text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: nowrap;
-}
 .chat-room-container {
   min-height: calc(100vh - 400px);
 }

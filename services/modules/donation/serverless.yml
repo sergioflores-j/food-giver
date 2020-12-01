@@ -36,7 +36,7 @@ functions:
     handler: src/v1/create.run
     events:
       - http:
-          path: /donation/v1/{userEmail}/donations
+          path: /donation/v1/users/{userEmail}/donations
           method: POST
           cors: true
           authorizer: customAuthorizer
@@ -45,7 +45,21 @@ functions:
     handler: src/v1/list.run
     events:
       - http:
-          path: /donation/v1/{userEmail}/donations
+          path: /donation/v1/users/{userEmail}/donations
+          method: GET
+          cors: true
+          authorizer: customAuthorizer
+      - http:
+          path: /donation/v1/donations
+          method: GET
+          cors: true
+          authorizer: customAuthorizer
+
+  getDonation:
+    handler: src/v1/get.run
+    events:
+      - http:
+          path: /donation/v1/users/{userEmail}/donations/{donationId}
           method: GET
           cors: true
           authorizer: customAuthorizer
