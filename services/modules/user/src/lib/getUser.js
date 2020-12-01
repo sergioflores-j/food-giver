@@ -16,7 +16,7 @@ export const get = async ({ email }) => {
 
 export const run = async ({ email }) => {
   try {
-    const user = await new UserDao().get({ email });
+    const user = await new UserDao().get({ email, excludePassword: true });
 
     return user;
   } catch (err) {

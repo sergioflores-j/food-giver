@@ -10,6 +10,12 @@
 
     <v-list subheader>
       <v-list-item
+        v-if="!list.length"
+        disabled
+      >
+        Nenhum chat iniciado
+      </v-list-item>
+      <v-list-item
         v-for="chat in list"
         :key="chat.chatId"
         :to="`/chats/${chat.chatId}`"

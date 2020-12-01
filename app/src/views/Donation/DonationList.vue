@@ -40,7 +40,7 @@
 </template>
 
 <script>
-import { listByUserEmail } from '@/services/donation';
+import { listByUserEmail, finishDonation } from '@/services/donation';
 import DonationsTable from '@/components/DonationsTable.vue';
 
 // TODOS: action buttons (finish donation shows dynamically), improve UI (spacings, colors, etc)
@@ -80,8 +80,7 @@ export default {
       }
     },
     async finishDonations() {
-      console.log('this.selected', this.selected);
-      // TODO: finish donations
+      await this.selected.map(async donation => await finishDonation(donation.donationId));
     },
   },
 };

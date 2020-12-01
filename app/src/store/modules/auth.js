@@ -57,6 +57,7 @@ export const auth = {
     logout(state) {
       state.status = '';
       state.token = '';
+      state.user = '';
     },
   },
 };

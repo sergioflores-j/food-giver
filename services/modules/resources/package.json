@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "AWS_PROFILE=default IS_OFFLINE=true npx serverless offline start",
+    "start": "cross-env AWS_PROFILE=default IS_OFFLINE=true npx serverless offline start",
     "install-local-db": "npx serverless dynamodb install",
     "test": "mochapack --webpack-config webpack.config.js './src/**/*.test.js' './test/**/*.test.js'",
     "test:nyan": "npm run test -- --reporter=nyan",
@@ -23,6 +23,7 @@
     "babel-loader": "^8.1.0",
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",
+    "cross-env": "^7.0.2",
     "eslint": "^5.16.0",
     "eslint-config-airbnb-base": "^13.1.0",
     "eslint-import-resolver-node": "^0.3.2",

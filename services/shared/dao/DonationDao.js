@@ -115,4 +115,27 @@ module.exports = class DonationDao extends GenericDao {
       },
     });
   }
+
+  async updateStatus({ userEmail, donationId, finished }) {
+    const { Attributes } = await this._update({
+      params: {
+        TableName: TABLE_NAME,
+        Key: {
+          userEmail,
+          donationId,
+        },
+        ConditionExpression: 'attribute_exists(userEmail) AND attribute_exists(donationId)',
+        UpdateExpression: 'SET #finished = :finished',
+        ExpressionAttributeNames: {
+          '#finished': 'finished',
+        },
+        ExpressionAttributeValues: {
+          ':finished': finished,
+        },
+        ReturnValues: 'UPDATED_NEW',
+      },
+    });
+
+    return Attributes;
+  }
 };

@@ -11,7 +11,7 @@ export const user = {
   },
   actions: {
     async getUser({ commit, state }, { email }) {
-      if (Object.keys(state.user).length) return state.user;
+      if (Object.keys(state.user).length && email === state.user.email) return state.user;
 
       try {
         const res = await get(email);
