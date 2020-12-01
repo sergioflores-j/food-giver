@@ -26,3 +26,11 @@ export const get = async (userEmail, donationId) => {
 
   if (res.status === 200) return res.data;
 };
+
+export const finishDonation = async (donationId, status, userEmail) => {
+  const res = await axios.put(`${process.env.VUE_APP_DONATION_ENDPOINT}/v1/users/${store.state.auth.user.email}/donations/${donationId}/status`, {
+    status: true,
+  });
+
+  if (res.status === 200) return res.data;
+};
