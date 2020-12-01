@@ -3,14 +3,6 @@
     <v-card-title>
       Minhas necessidades
       <v-spacer />
-      <v-text-field
-        v-model="search"
-        append-icon="mdi-magnify"
-        label="Pesquisar"
-        single-line
-        hide-details
-      />
-      <v-spacer />
       <v-btn
         color="primary"
         to="new"
@@ -21,6 +13,21 @@
         Nova necessidade
       </v-btn>
     </v-card-title>
+
+    <v-container fluid>
+      <v-row>
+        <v-col>
+          <v-text-field
+            v-model="search"
+            append-icon="mdi-magnify"
+            label="Pesquisar"
+            single-line
+            hide-details
+          />
+        </v-col>
+      </v-row>
+    </v-container>
+
     <v-data-table
       v-model="selected"
       :headers="headers"
