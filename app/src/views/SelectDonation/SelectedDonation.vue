@@ -38,6 +38,9 @@
 
           <v-list v-if="!loading.necessities">
             <v-list-item-group v-model="selectedNecessity" color="primary">
+              <v-list-item v-if="!necessities.length" disabled>
+                Nenhuma necessidade encontrada.
+              </v-list-item>
               <v-list-item v-for="(necessity, index) of necessities" :key="index" :value="index">
                 <template #default="{ active }">
                   <v-list-item-action>
@@ -88,15 +91,15 @@
       </div>
     </template>
 
-    <v-snackbar v-model="showErrorSnackbar" light>
-      {{ errorText }}
+    <v-snackbar v-model="snackbar.show" :color="snackbar.type" outlined>
+      {{ snackbar.text }}
 
       <template #action="{ attrs }">
         <v-btn
-          color="red"
+          :color="snackbar.type"
           text
           v-bind="attrs"
-          @click="showErrorSnackbar = false"
+          @click="snackbar.show = false"
         >
           Fechar
         </v-btn>
@@ -124,10 +127,13 @@ export default {
     return {
       donation: '',
       user: '',
-      showErrorSnackbar: false,
-      selectedNecessity: 0,
+      selectedNecessity: -1,
       necessities: [],
-      errorText: '',
+      snackbar: {
+        show: false,
+        text: '',
+        type: '',
+      },
       loading: {
         donation: false,
         necessities: false,
@@ -158,8 +164,7 @@ export default {
         this.user = user;
       } catch (err) {
         console.error('Error getDonation', err);
-        this.showErrorSnackbar = true;
-        this.errorText = 'Não foi possível buscar os dados da doação, tente novamente mais tarde!';
+        this.openSnackbar('Não foi possível buscar os dados da doação, tente novamente mais tarde!');
       } finally {
         this.loading.donation = false;
       }
@@ -174,14 +179,16 @@ export default {
       } catch (err) {
         console.error('error getNecessityList', err);
         // TODO: mostrar erros customizados na snackbar :D
-        this.showErrorSnackbar = true;
-        this.errorText = 'Não foi possível buscar as suas necessidades, tente novamente mais tarde!';
+        this.openSnackbar('Não foi possível buscar as suas necessidades, tente novamente mais tarde!');
       } finally {
         this.loading.necessities = false;
       }
     },
     async selectDonation() {
-      if (!this.selectedNecessity && this.selectedNecessity !== 0) return;
+      if ((!this.selectedNecessity && this.selectedNecessity === 0) || this.selectedNecessity < 0) {
+        this.openSnackbar('Selecione uma necessidade a ser atendida', { type: 'warning' });
+        return;
+      }
 
       const selectedNecessity = this.necessities[this.selectedNecessity];
 
@@ -195,8 +202,7 @@ export default {
 
         await this.startChat();
       } catch (error) {
-        this.showErrorSnackbar = true;
-        this.errorText = 'Não foi possível selecionar a doação, tente novamente mais tarde!';
+        this.openSnackbar('Não foi possível selecionar a doação, tente novamente mais tarde!');
       } finally {
         this.loading.submit = false;
       }
@@ -214,6 +220,11 @@ export default {
       });
 
       this.$router.push(`/chats/${chat.chatId}`);
+    },
+    openSnackbar(text, { type = 'error' } = {}) {
+      this.snackbar.show = true;
+      this.snackbar.text = text;
+      this.snackbar.type = type;
     },
   },
 };
