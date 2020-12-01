@@ -41,7 +41,6 @@
         </v-col>
       </v-row>
     </v-card>
-    <pre><code>{{ user }}</code></pre>
   </v-container>
 </template>
 
