@@ -64,6 +64,15 @@ functions:
           cors: true
           authorizer: customAuthorizer
 
+  changeStatusDonation:
+    handler: src/v1/changeStatus.run
+    events:
+      - http:
+          path: /donation/v1/users/{userEmail}/donations/{donationId}/status
+          method: PUT
+          cors: true
+          authorizer: customAuthorizer
+
 custom:
   serverless-offline:
     lambdaPort: null
