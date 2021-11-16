@@ -79,7 +79,7 @@
   "dependencies": {
     "aws-dynamodb-factory-js": "^2.0.2",
     "aws-lambda-utils-js": "^1.1.2",
-    "aws-sdk": "^2.660.0",
+    "aws-sdk": "^2.814.0",
     "axios": "^0.19.2",
     "crypto": "^1.0.1",
     "deep-object-js": "^1.1.1",
