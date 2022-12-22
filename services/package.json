@@ -83,7 +83,7 @@
     "axios": "^0.19.2",
     "crypto": "^1.0.1",
     "deep-object-js": "^1.1.1",
-    "jsonwebtoken": "^8.5.1",
+    "jsonwebtoken": "^9.0.0",
     "moment-timezone": "^0.5.28",
     "qs": "^6.5.2",
     "uuid": "^7.0.3",
